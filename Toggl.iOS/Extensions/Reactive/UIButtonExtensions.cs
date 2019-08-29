@@ -24,6 +24,13 @@ namespace Toggl.iOS.Extensions.Reactive
         public static Action<string> Title(this IReactive<UIButton> reactive)
             => title => reactive.Base.SetTitle(title, UIControlState.Normal);
 
+        public static Action<string> TitleAdaptive(this IReactive<UIButton> reactive)
+            => title =>
+            {
+                reactive.Base.SetTitle(title, UIControlState.Normal);
+                reactive.Base.SizeToFit();
+            };
+
         public static Action<UIColor> TitleColor(this IReactive<UIButton> reactive)
             => color => reactive.Base.SetTitleColor(color, UIControlState.Normal);
 

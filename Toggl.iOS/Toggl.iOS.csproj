@@ -1991,6 +1991,7 @@
     <Compile Include="ViewControllers\Reactive\IReactiveViewController.cs" />
     <Compile Include="ViewControllers\Reactive\ReactiveNavigationController.cs" />
     <Compile Include="DebugHelpers\ErrorTriggeringViewController.cs" />
+    <Compile Include="Extensions\Reactive\UIActivityIndicatorViewExtensions.cs" />
     <Compile Include="Views\AccessibilityAwareView.cs" />
     <Compile Include="Services\AccessibilityServiceIos.cs" />
     <Compile Include="Cells\Settings\SettingCell.cs" />

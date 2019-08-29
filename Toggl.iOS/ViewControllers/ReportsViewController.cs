@@ -31,8 +31,11 @@ namespace Toggl.iOS.ViewControllers
 
         private const double maxWidth = 834;
 
+        private CGRect activityIndicatorCenteredFrame = new CGRect(80, 0.5, 40, 40);
+        private CGRect activityIndicatorLeftAlignedFrame = new CGRect(-35, -5, 40, 40);
 
         private UIButton titleButton;
+        private UIActivityIndicatorView activityIndicator;
         private bool calendarIsVisible;
         private bool alreadyLoadedCalendar;
         private ReportsTableViewSource source;
@@ -108,7 +111,19 @@ namespace Toggl.iOS.ViewControllers
                 .DisposedBy(DisposeBag);
 
             ViewModel.CurrentDateRange
-                .Subscribe(titleButton.Rx().Title())
+                .Subscribe(titleButton.Rx().TitleAdaptive())
+                .DisposedBy(DisposeBag);
+
+            ViewModel.CurrentDateRange
+                .Select(range => range == null)
+                .DistinctUntilChanged()
+                .Subscribe(shouldCenter =>
+                {
+                    if (shouldCenter)
+                        activityIndicator.Frame = activityIndicatorCenteredFrame;
+                    else
+                        activityIndicator.Frame = activityIndicatorLeftAlignedFrame;
+                })
                 .DisposedBy(DisposeBag);
 
             //Visibility
@@ -120,6 +135,10 @@ namespace Toggl.iOS.ViewControllers
             ViewModel.WorkspaceNameObservable
                 .Select(isWorkspaceNameTooLong)
                 .Subscribe(WorkspaceFadeView.Rx().FadeRight())
+                .DisposedBy(DisposeBag);
+
+            ViewModel.IsLoadingObservable
+                .Subscribe(activityIndicator.Rx().IsAnimating())
                 .DisposedBy(DisposeBag);
 
             //Commands
@@ -283,6 +302,11 @@ namespace Toggl.iOS.ViewControllers
             NavigationItem.TitleView = titleButton = new UIButton(new CGRect(0, 0, 200, 40));
             titleButton.Font = UIFont.SystemFontOfSize(14, UIFontWeight.Medium);
             titleButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+            activityIndicator = new UIActivityIndicatorView();
+            activityIndicator.Color = UIColor.Black;
+            activityIndicator.StartAnimating();
+            activityIndicator.Frame = activityIndicatorCenteredFrame;
+            titleButton.AddSubview(activityIndicator);
 
             // Calendar configuration
             TopCalendarConstraint.Constant = calendarHeight;

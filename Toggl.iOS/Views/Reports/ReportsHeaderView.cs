@@ -90,7 +90,8 @@ namespace Toggl.iOS.Views.Reports
             barChart.Item = Item;
 
             //Loading chart
-            Item.IsLoadingObservable
+            Item.GroupedSegmentsObservable
+                .Select(segments => segments == null)
                 .Subscribe(LoadingPieChartView.Rx().IsVisibleWithFade())
                 .DisposedBy(disposeBag);
 

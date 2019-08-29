@@ -78,7 +78,9 @@ namespace Toggl.iOS.Views.Reports
                 .DisposedBy(disposeBag);
 
             //Loading chart
-            Item.IsLoadingObservable
+            Item.BillablePercentageObservable
+                .CombineLatest(Item.TotalTimeObservable,
+                    (totalTime, percentage) => totalTime == null || percentage == null)
                 .Subscribe(LoadingOverviewView.Rx().IsVisibleWithFade())
                 .DisposedBy(disposeBag);
 

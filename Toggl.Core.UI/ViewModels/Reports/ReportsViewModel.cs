@@ -134,7 +134,7 @@ namespace Toggl.Core.UI.ViewModels.Reports
                 .Where(report => report != null);
             BarChartViewModel = new ReportsBarChartViewModel(schedulerProvider, dataSource.Preferences, totalsObservable, navigationService);
 
-            IsLoadingObservable = isLoading.AsObservable().StartWith(true).AsDriver(schedulerProvider);
+            IsLoadingObservable = isLoading.AsObservable().AsDriver(schedulerProvider);
             StartDate = startDateSubject.AsObservable().AsDriver(schedulerProvider);
             EndDate = endDateSubject.AsObservable().AsDriver(schedulerProvider);
 
@@ -154,7 +154,9 @@ namespace Toggl.Core.UI.ViewModels.Reports
                 .AsDriver(schedulerProvider);
 
             CurrentDateRange = currentDateRangeStringSubject
-                .Select(text => !string.IsNullOrEmpty(text) ? $"{text} ▾" : "")
+                .StartWith(Resources.ThisWeek)
+                .Where(text => !string.IsNullOrEmpty(text))
+                .Select(text => $"{text} ▾")
                 .DistinctUntilChanged()
                 .AsDriver(schedulerProvider);
 

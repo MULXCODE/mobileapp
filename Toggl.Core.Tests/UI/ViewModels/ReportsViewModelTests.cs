@@ -221,7 +221,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         public sealed class TheCurrentDateRangeStringProperty : ReportsViewModelTest
         {
             [Fact, LogIfTooSlow]
-            public async Task IsInitializedToEmptyOrNull()
+            public async Task IsInitializedToThisWeek()
             {
                 var observer = TestScheduler.CreateObserver<string>();
                 var now = DateTimeOffset.Now;
@@ -230,8 +230,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 await ViewModel.Initialize();
 
                 TestScheduler.Start();
-                var currentDateRangeString = observer.Values().First();
-                currentDateRangeString.Should().BeNullOrEmpty();
+                observer.LastEmittedValue().Should().Be($"{Resources.ThisWeek} ▾");
             }
 
             public sealed class WhenAShortcutIsSelected : ReportsViewModelTest
