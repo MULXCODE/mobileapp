@@ -42,6 +42,7 @@ namespace Toggl.Droid.Activities
         protected override void InitializeBindings()
         {
             ViewModel.Suggestions
+                .SubscribeOn(AndroidDependencyContainer.Instance.SchedulerProvider.BackgroundScheduler)
                 .Subscribe(adapter.Rx().Items())
                 .DisposedBy(DisposeBag);
 
