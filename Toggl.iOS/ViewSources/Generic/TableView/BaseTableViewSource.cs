@@ -44,7 +44,7 @@ namespace Toggl.iOS.ViewSources
             SetSections(sections);
         }
 
-        public void SetSections(IImmutableList<TSection> sections)
+        public virtual void SetSections(IImmutableList<TSection> sections)
         {
             Sections = sections ?? ImmutableList<TSection>.Empty;
         }

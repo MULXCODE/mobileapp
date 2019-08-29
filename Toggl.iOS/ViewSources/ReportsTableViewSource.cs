@@ -1,6 +1,7 @@
 ﻿using CoreGraphics;
 using Foundation;
 using System;
+using System.Collections.Immutable;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Toggl.Core.Reports;
@@ -89,6 +90,17 @@ namespace Toggl.iOS.ViewSources
             if (!disposing) return;
 
             disposeBag.Dispose();
+        }
+
+        public override void SetSections(IImmutableList<ReportsSection> sections)
+        {
+            if (sections.Count == 0)
+            {
+                var newSection = new ReportsSection();
+                newSection.Initialize(default, ImmutableList<ChartSegment>.Empty);
+                sections = ImmutableList.Create(newSection);
+            }
+            base.SetSections(sections);
         }
 
         public override UIView GetViewForHeader(UITableView tableView, nint section)
