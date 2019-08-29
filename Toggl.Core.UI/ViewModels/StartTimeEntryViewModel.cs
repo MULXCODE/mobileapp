@@ -487,9 +487,11 @@ namespace Toggl.Core.UI.ViewModels
                 origin = paramOrigin;
             }
 
+            Close();
+
             return interactorFactory.CreateTimeEntry(timeEntry, origin)
                 .Execute()
-                .Do(_ => Close());
+                .SubscribeOn(schedulerProvider.BackgroundScheduler);
         }
 
         private void onParsedQuery(QueryInfo parsedQuery)
