@@ -224,10 +224,12 @@
             <Switch
                 android:id="@+id/IsPrivateSwitch"
                 android:layout_marginRight="16dp"
+                android:padding="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/ChangeWorkspaceViewPrivateProjectImage" />
+                android:layout_alignTop="@id/ChangeWorkspaceViewPrivateProjectImage"
+                android:layout_alignBottom="@id/ChangeWorkspaceViewPrivateProjectImage" />
         </RelativeLayout>
         <View
             android:background="@color/separator"
