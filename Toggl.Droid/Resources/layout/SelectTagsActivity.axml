@@ -27,6 +27,7 @@
             android:lineSpacingExtra="5sp"
             tools:hint="Add/filter tags"
             android:textCursorDrawable="@null"
+            android:background="@null"
             android:textColor="@color/defaultEditText"
             android:textColorHint="@color/placeholderText"
             android:layout_marginLeft="56dp"

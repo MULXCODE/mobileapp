@@ -30,10 +30,11 @@
             android:letterSpacing="-0.01"
             android:lineSpacingExtra="5sp"
             android:textCursorDrawable="@null"
+            android:background="@null"
             tools:hint="Add/filter clients"
             android:textColor="@color/defaultEditText"
             android:textColorHint="@color/placeholderText"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
     </LinearLayout>
