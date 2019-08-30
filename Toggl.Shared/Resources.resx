@@ -170,7 +170,7 @@
     </data>
     <data name="GenericLoginError" xml:space="preserve">
         <value>Sorry, we’re having trouble logging you in.
-            Please try again.</value>
+Please try again.</value>
     </data>
     <data name="GenericSignUpError" xml:space="preserve">
         <value>Sorry, we’re having trouble signing you up. Please try again.</value>
@@ -255,7 +255,7 @@
     </data>
     <data name="LogEmptyStateText" xml:space="preserve">
         <value>You haven’t tracked time for a while.
-            Start the timer and your most used time entries will appear here.</value>
+Start the timer and your most used time entries will appear here.</value>
     </data>
     <data name="DifferentWorkspaceAlertTitle" xml:space="preserve">
         <value>You've selected a project from another workspace.</value>
@@ -538,7 +538,7 @@
     </data>
     <data name="TermsOfServiceDialogMessageDroid" xml:space="preserve">
         <value>By tapping "I Agree", you
-            understand and agree to Toggl\'s</value>
+understand and agree to Toggl's</value>
     </data>
     <data name="CountryOfResidence" xml:space="preserve">
         <value>Country of residence</value>
@@ -826,7 +826,8 @@
         <value>Uh oh.</value>
     </data>
     <data name="NoWorkspaceErrorMessage" xml:space="preserve">
-        <value>Seems someone has removed you from their workspace.\nNo worries. Create a new workspace to continue.</value>
+        <value>Seems someone has removed you from their workspace.
+No worries. Create a new workspace to continue.</value>
     </data>
     <data name="Skip" xml:space="preserve">
         <value>Skip</value>
@@ -836,7 +837,7 @@
     </data>
     <data name="AppOutdatedMessage" xml:space="preserve">
         <value>Seems you haven't updated the app for quite some time...
-            Please update your app to continue.</value>
+Please update your app to continue.</value>
     </data>
     <data name="UpdateTheApp" xml:space="preserve">
         <value>Update the app</value>
@@ -895,7 +896,7 @@
     </data>
     <data name="EmptyTagText" xml:space="preserve">
         <value>Your tags will show up here.
-            Use them to add keywords to your time entries.</value>
+Use them to add keywords to your time entries.</value>
     </data>
     <data name="GroupTimeEntries" xml:space="preserve">
         <value>Group similar time entries</value>
@@ -1211,7 +1212,7 @@
     </data>
     <data name="ReportsEmptyStateDescription" xml:space="preserve">
         <value>You have no time entries for
-            the selected time period.</value>
+the selected time period.</value>
     </data>
     <data name="SiriShortcutCellAdd" xml:space="preserve">
         <value>Add</value>
@@ -1271,7 +1272,8 @@
         <value>Allow access</value>
     </data>
     <data name="PrivateProjectHint" xml:space="preserve">
-        <value>Private projects are only accessible\nto project members</value>
+        <value>Private projects are only accessible
+to project members</value>
     </data>
     <data name="Username" xml:space="preserve">
         <value>Username</value>
