@@ -35,8 +35,12 @@
         android:id="@+id/SelectColorValueSlider"
         android:max="75"
         android:thumb="@drawable/ValueSliderThumb"
-        android:layout_height="18dp"
-        android:layout_width="match_parent" />
+        android:layout_height="20dp"
+        android:maxHeight="20dp"
+        android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="6dp"
+        />
     <LinearLayout
         android:gravity="right"
         android:orientation="horizontal"
