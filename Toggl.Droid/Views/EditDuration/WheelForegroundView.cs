@@ -2,6 +2,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V7.App;
 using Android.Util;
 using Android.Views;
 using System;
@@ -15,8 +16,9 @@ using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using static Toggl.Shared.Math;
 using Color = Android.Graphics.Color;
-using FoundationColor = Toggl.Core.UI.Helper.Colors;
 using Math = System.Math;
+using static Toggl.Core.UI.Helper.Colors.EditDuration.Wheel;
+using System.Linq;
 
 namespace Toggl.Droid.Views.EditDuration
 {
@@ -59,11 +61,17 @@ namespace Toggl.Droid.Views.EditDuration
         private int numberOfFullLoops => (int)((EndTime - StartTime).TotalMinutes / MinutesInAnHour);
         private bool isFullCircle => numberOfFullLoops >= 1;
 
-        private Color backgroundColor
-            => FoundationColor.EditDuration.Wheel.Rainbow.GetPingPongIndexedItem(numberOfFullLoops).ToNativeColor();
+        private readonly Lazy<Color[]> rainbowColors = new Lazy<Color[]>(() =>
+            Rainbow
+                .Select(color => ActiveTheme.Is.DarkTheme ? color.WithAlpha(180) : color)
+                .Select(color => color.ToNativeColor())
+                .ToArray());
 
-        private Color foregroundColor
-            => FoundationColor.EditDuration.Wheel.Rainbow.GetPingPongIndexedItem(numberOfFullLoops + 1).ToNativeColor();
+        private Color backgroundColor => rainbowColors.Value
+            .GetPingPongIndexedItem(numberOfFullLoops);
+
+        private Color foregroundColor => rainbowColors.Value
+            .GetPingPongIndexedItem(numberOfFullLoops + 1);
 
         private readonly Subject<EditTimeSource> timeEditedSubject = new Subject<EditTimeSource>();
         private readonly Subject<DateTimeOffset> startTimeSubject = new Subject<DateTimeOffset>();

@@ -85,6 +85,9 @@ namespace Toggl.Shared
         public static string ToHexString(this Color color)
             => $"#{color.Red:X2}{color.Green:X2}{color.Blue:X2}";
 
+        public static Color WithAlpha(this Color color, byte alpha)
+            => new Color(color.Red, color.Green, color.Blue, alpha);
+
         public static Color Darken(this Color color)
             => color.ChangeColorBrightness(-0.2f);
 
