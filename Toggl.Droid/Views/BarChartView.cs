@@ -110,15 +110,15 @@ namespace Toggl.Droid.Views
             dateTopPadding = 4.DpToPixels(context);
 
             othersPaint.TextSize = textSize;
-            billablePaint.Color = new Color(context.GetColor(Resource.Color.billableChartBar));
-            nonBillablePaint.Color = new Color(context.GetColor(Resource.Color.nonBillableChartBar));
+            billablePaint.Color = context.SafeGetColor(Resource.Color.billableChartBar);
+            nonBillablePaint.Color = context.SafeGetColor(Resource.Color.nonBillableChartBar);
             nonBillablePaint.SetStyle(Paint.Style.FillAndStroke);
             billablePaint.SetStyle(Paint.Style.FillAndStroke);
 
-            emptyBarColor = new Color(Context.GetColor(Resource.Color.placeholderText));
-            primaryTextColor = new Color(Context.GetColor(Resource.Color.primaryText));
-            horizontalLineColor = new Color(Context.GetColor(Resource.Color.separator));
-            hoursTextColor = new Color(Context.GetColor(Resource.Color.placeholderText));
+            emptyBarColor = context.SafeGetColor(Resource.Color.placeholderText);
+            primaryTextColor = context.SafeGetColor(Resource.Color.primaryText);
+            horizontalLineColor = context.SafeGetColor(Resource.Color.separator);
+            hoursTextColor = context.SafeGetColor(Resource.Color.placeholderText);
         }
 
         protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)

@@ -101,13 +101,13 @@ namespace Toggl.Droid.Views
             selectedPaint = new Paint
             {
                 Flags = PaintFlags.AntiAlias,
-                Color = new Color(ContextCompat.GetColor(context, Resource.Color.calendarSelected))
+                Color = context.SafeGetColor(Resource.Color.calendarSelected)
             };
 
             circlePaint = new Paint
             {
                 Flags = PaintFlags.AntiAlias,
-                Color = Reports.DayNotInMonth.ToNativeColor()
+                Color = context.SafeGetColor(Resource.Color.placeholderText)
             };
         }
 

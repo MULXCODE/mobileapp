@@ -95,8 +95,8 @@ namespace Toggl.Droid.Activities
                 .Subscribe(clientNameTextView.Rx().TextObserver())
                 .DisposedBy(DisposeBag);
 
-            var primaryTextColor = new Color(GetColor(Resource.Color.primaryText));
-            var placeholderTextColor = new Color(GetColor(Resource.Color.placeholderText));
+            var primaryTextColor = this.SafeGetColor(Resource.Color.primaryText);
+            var placeholderTextColor = this.SafeGetColor(Resource.Color.placeholderText);
             ViewModel.ClientName
                 .Select(clientTextColor)
                 .Subscribe(clientNameTextView.SetTextColor)

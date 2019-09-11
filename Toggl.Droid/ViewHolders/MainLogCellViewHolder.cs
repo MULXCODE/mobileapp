@@ -1,7 +1,6 @@
 using Android.Graphics;
 using Android.Runtime;
 using Android.Support.Constraints;
-using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
 using System;
@@ -12,7 +11,6 @@ using Toggl.Core.UI.ViewModels.TimeEntriesLog;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.ViewHelpers;
 using static Toggl.Droid.Resource.Id;
-using GroupingColor = Toggl.Core.UI.Helper.Colors.TimeEntriesLog.Grouping;
 
 namespace Toggl.Droid.ViewHolders
 {
@@ -58,8 +56,8 @@ namespace Toggl.Droid.ViewHolders
 
         protected override void InitializeViews()
         {
-            cardColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.card));
-            backgroundColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.background));
+            cardColor = ItemView.Context.SafeGetColor(Resource.Color.card);
+            backgroundColor = ItemView.Context.SafeGetColor(Resource.Color.background);
 
             groupItemBackground = ItemView.FindViewById<View>(MainLogGroupBackground);
             groupCountTextView = ItemView.FindViewById<TextView>(TimeEntriesLogCellGroupCount);
@@ -189,7 +187,7 @@ namespace Toggl.Droid.ViewHolders
             groupCountTextView.Enabled = true;
             groupCountTextView.Text = timeEntriesCount.ToString();
             groupCountTextView.Visibility = ViewStates.Visible;
-            groupCountTextView.SetTextColor(GroupingColor.Collapsed.Text.ToNativeColor());
+            groupCountTextView.SetTextColor(ItemView.Context.SafeGetColor(Resource.Color.primaryText));
             groupItemBackground.Visibility = ViewStates.Gone;
             durationPadding.SetBackgroundColor(cardColor);
             durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToCardColorGradient);
@@ -202,7 +200,7 @@ namespace Toggl.Droid.ViewHolders
             groupCountTextView.Enabled = true;
             groupCountTextView.Text = timeEntriesCount.ToString();
             groupCountTextView.Visibility = ViewStates.Visible;
-            groupCountTextView.SetTextColor(GroupingColor.Expanded.Text.ToNativeColor());
+            groupCountTextView.SetTextColor(ItemView.Context.SafeGetColor(Resource.Color.accent));
             groupItemBackground.Visibility = ViewStates.Gone;
             durationPadding.SetBackgroundColor(cardColor);
             durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToCardColorGradient);

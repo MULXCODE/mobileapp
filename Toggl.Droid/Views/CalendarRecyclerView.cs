@@ -89,13 +89,13 @@ namespace Toggl.Droid.Views
 
             linesPaint = new Paint(PaintFlags.AntiAlias)
             {
-                Color = new Color(Context.GetColor(Resource.Color.separator)),
+                Color = Context.SafeGetColor(Resource.Color.separator),
                 StrokeWidth = 1.DpToPixels(Context)
             };
 
             hoursLabelPaint = new Paint(PaintFlags.AntiAlias)
             {
-                Color = new Color(Context.GetColor(Resource.Color.reportsLabel)),
+                Color = Context.SafeGetColor(Resource.Color.reportsLabel),
                 TextAlign = Paint.Align.Right,
                 TextSize = 12.SpToPixels(Context)
             };

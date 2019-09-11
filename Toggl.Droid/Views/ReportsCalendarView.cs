@@ -70,7 +70,7 @@ namespace Toggl.Droid.Views
         private void Init(Context context)
         {
             Inflate(Context, Resource.Layout.ReportsCalendarView, this);
-            SetBackgroundColor(new Android.Graphics.Color(ContextCompat.GetColor(Context, Resource.Color.background)));
+            SetBackgroundColor(Context.SafeGetColor(Resource.Color.background));
 
             rowHeight = context.Resources.DisplayMetrics.WidthPixels / 7;
 
