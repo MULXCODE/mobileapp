@@ -49,7 +49,7 @@ namespace Toggl.Droid.Views
 
         private void onCancelled(object sender, EventArgs e)
         {
-            onChosen(default(T));
+            onChosen(options[initialIndex].Item);
             activity = null;
         }
 
