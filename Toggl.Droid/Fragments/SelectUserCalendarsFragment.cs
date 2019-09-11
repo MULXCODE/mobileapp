@@ -20,10 +20,7 @@ namespace Toggl.Droid.Fragments
         {
             base.OnCreateView(inflater, container, savedInstanceState);
 
-            var contextThemeWrapper = new ContextThemeWrapper(Activity, Resource.Style.TogglDialog);
-            var wrappedInflater = inflater.CloneInContext(contextThemeWrapper);
-
-            var view = wrappedInflater.Inflate(Resource.Layout.SelectUserCalendarsFragment, container, false);
+            var view = inflater.Inflate(Resource.Layout.SelectUserCalendarsFragment, container, false);
             InitializeViews(view);
 
             return view;

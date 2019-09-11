@@ -12,10 +12,7 @@ namespace Toggl.Droid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            var contextThemeWrapper = new ContextThemeWrapper(Activity, Resource.Style.TogglDialog);
-            var wrappedInflater = inflater.CloneInContext(contextThemeWrapper);
-
-            var view = wrappedInflater.Inflate(Resource.Layout.UpcomingEventsNotificationSettingsFragment, container, false);
+            var view = inflater.Inflate(Resource.Layout.UpcomingEventsNotificationSettingsFragment, container, false);
             InitializeViews(view);
 
             return view;

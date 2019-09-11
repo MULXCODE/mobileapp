@@ -31,12 +31,6 @@ namespace Toggl.Droid.Fragments
         {
         }
 
-        public override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
-            SetStyle(StyleNoTitle, Resource.Style.TogglDialog);
-        }
-
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
