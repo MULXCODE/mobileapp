@@ -29,6 +29,9 @@
   <color name="calendarSelected">#FF328FFF</color>
   <color name="nonBillableChartBar">#1E328FFF</color>
   <color name="billableChartBar">#FF328FFF</color>
+  <color name="billablePercentageText">#FF00ABFC</color>
+  <color name="totalTimeText">#4CD964</color>
+  <color name="disabledReportFeature">#FFB5BCC0</color>
 
   <!--Calendar page-->
   <color name="calendarHeaderBackground">#FF959595</color>

@@ -1,3 +1,4 @@
+using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Runtime;
@@ -14,17 +15,15 @@ using Toggl.Droid.Extensions;
 using Toggl.Droid.ViewHelpers;
 using Toggl.Droid.Views;
 using Toggl.Shared;
-using static Toggl.Core.UI.Helper.Colors.Reports;
 using Color = Android.Graphics.Color;
 
 namespace Toggl.Droid.ViewHolders
 {
     public class ReportsHeaderCellViewHolder : BaseRecyclerViewHolder<ReportsSummaryData>
     {
-
-        private static readonly Color disabledColor = Disabled.ToNativeColor();
-        private static readonly Color timeSpanNormalColor = TotalTimeActivated.ToNativeColor();
-        private static readonly Color percentageNormalColor = PercentageActivated.ToNativeColor();
+        private static readonly Color totalTimeText;
+        private static readonly Color disabledReportFeature;
+        private static readonly Color billablePercentageText;
 
         private CardView summaryCard;
         private TextView reportsSummaryTotal;
@@ -49,11 +48,20 @@ namespace Toggl.Droid.ViewHolders
 
         public ISubject<Unit> SummaryCardClicksSubject { get; set; }
 
-        public ReportsHeaderCellViewHolder(View itemView) : base(itemView)
+        static ReportsHeaderCellViewHolder()
+        {
+            totalTimeText = Application.Context.SafeGetColor(Resource.Color.totalTimeText);
+            disabledReportFeature = Application.Context.SafeGetColor(Resource.Color.disabledReportFeature);
+            billablePercentageText = Application.Context.SafeGetColor(Resource.Color.billablePercentageText);
+        }
+
+        public ReportsHeaderCellViewHolder(View itemView)
+            : base(itemView)
         {
         }
 
-        public ReportsHeaderCellViewHolder(IntPtr handle, JniHandleOwnership ownership) : base(handle, ownership)
+        public ReportsHeaderCellViewHolder(IntPtr handle, JniHandleOwnership ownership)
+            : base(handle, ownership)
         {
 
         }
@@ -79,19 +87,19 @@ namespace Toggl.Droid.ViewHolders
 
             summaryCard.Click += hideCalendar;
 
-            reportsSummaryTotalLabel.Text = Shared.Resources.Total;
-            reportsSummaryBillableLabel.Text = Shared.Resources.Billable;
-            clockedHoursLabel.Text = Shared.Resources.ClockedHours;
-            billableTextLabel.Text = Shared.Resources.Billable;
-            nonBillableTextLabel.Text = Shared.Resources.NonBillable;
-            emptyStateTitle.Text = Shared.Resources.ReportsEmptyStateTitle;
-            emptyStateMessage.Text = Shared.Resources.ReportsEmptyStateDescription;
+            reportsSummaryTotalLabel.Text = Resources.Total;
+            reportsSummaryBillableLabel.Text = Resources.Billable;
+            clockedHoursLabel.Text = Resources.ClockedHours;
+            billableTextLabel.Text = Resources.Billable;
+            nonBillableTextLabel.Text = Resources.NonBillable;
+            emptyStateTitle.Text = Resources.ReportsEmptyStateTitle;
+            emptyStateMessage.Text = Resources.ReportsEmptyStateDescription;
         }
 
         protected override void UpdateView()
         {
             reportsSummaryTotal.TextFormatted = convertReportTimeSpanToDurationString(Item.TotalTime, Item.DurationFormat);
-            reportsTotalChartImageDrawable.SetColorFilter(Item.TotalTimeIsZero ? Disabled.ToNativeColor() : TotalTimeActivated.ToNativeColor(), PorterDuff.Mode.SrcIn);
+            reportsTotalChartImageDrawable.SetColorFilter(Item.TotalTimeIsZero ? disabledReportFeature : totalTimeText, PorterDuff.Mode.SrcIn);
             reportsSummaryBillable.TextFormatted = convertBillablePercentageToSpannable(Item.BillablePercentage);
             updateBillablePercentageViewWidth();
             pieChartCard.Visibility = (!Item.ShowEmptyState).ToVisibility();
@@ -130,7 +138,7 @@ namespace Toggl.Droid.ViewHolders
 
         private ISpannable selectTimeSpanEnabledStateSpan(string timeString, int emphasizedPartLength, bool isDisabled)
         {
-            var color = isDisabled ? disabledColor : timeSpanNormalColor;
+            var color = isDisabled ? disabledReportFeature : totalTimeText;
 
             var spannable = new SpannableString(timeString);
             spannable.SetSpan(new TypefaceSpan("sans-serif"), 0, emphasizedPartLength, SpanTypes.InclusiveInclusive);
@@ -155,7 +163,7 @@ namespace Toggl.Droid.ViewHolders
 
         private ISpannable selectBillablePercentageEnabledStateSpan(string percentage, bool isDisabled)
         {
-            var color = isDisabled ? disabledColor : percentageNormalColor;
+            var color = isDisabled ? disabledReportFeature : billablePercentageText;
             var spannable = new SpannableString(percentage);
             spannable.SetSpan(new ForegroundColorSpan(color), 0, spannable.Length(), SpanTypes.ExclusiveExclusive);
 

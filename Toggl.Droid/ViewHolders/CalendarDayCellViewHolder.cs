@@ -7,7 +7,6 @@ using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels.ReportsCalendar;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.Views;
-using static Toggl.Core.UI.Helper.Colors.Reports;
 
 namespace Toggl.Droid.ViewHolders
 {
@@ -36,7 +35,11 @@ namespace Toggl.Droid.ViewHolders
 
         public void UpdateSelectionState(ReportsDateRangeParameter selectedDateRange)
         {
-            dayView.SetTextColor(Item.IsSelected(selectedDateRange) || Item.IsToday ? Color.White : DayNotInMonth.ToNativeColor());
+            var dayTextColor = ItemView.Context.SafeGetColor(
+                Item.IsSelected(selectedDateRange) || Item.IsToday ? Android.Resource.Color.White
+                : Item.IsInCurrentMonth ? Resource.Color.primaryText : Resource.Color.placeholderText);
+
+            dayView.SetTextColor(dayTextColor);
             dayView.RoundLeft = Item.IsStartOfSelectedPeriod(selectedDateRange);
             dayView.RoundRight = Item.IsEndOfSelectedPeriod(selectedDateRange);
             dayView.IsSelected = Item.IsSelected(selectedDateRange);
