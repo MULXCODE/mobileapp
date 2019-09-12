@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@color/card"
+    app:cardBackgroundColor="@color/cardBackground"
     android:layout_marginTop="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"

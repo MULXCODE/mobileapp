@@ -8,7 +8,7 @@
     <android.support.v7.widget.CardView
         android:elevation="2dp"
         app:cardCornerRadius="2dp"
-        app:cardBackgroundColor="@color/card"
+        app:cardBackgroundColor="@color/cardBackground"
         android:layout_height="48dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -51,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/ReportsFragmentItemPercentage" />
             <View
-                android:background="@color/card"
+                android:background="@color/cardBackground"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="1dp"
                 android:layout_width="match_parent"

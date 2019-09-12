@@ -7,7 +7,7 @@
     android:layout_height="48dp"
     android:layout_width="match_parent"
     android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/card">  
+    android:background="@color/cardBackground">  
     <ImageView
         android:src="@drawable/add_new"
         android:layout_width="24dp"

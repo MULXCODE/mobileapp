@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/expandedToolbarHeight" />
     <android.support.constraint.ConstraintLayout
         android:id="@+id/DurationCard"
-        android:background="@color/card"
+        android:background="@color/cardBackground"
         android:layout_height="64dp"
         android:layout_gravity="bottom"
         android:layout_width="match_parent">

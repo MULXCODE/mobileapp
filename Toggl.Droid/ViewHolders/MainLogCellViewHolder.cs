@@ -56,7 +56,7 @@ namespace Toggl.Droid.ViewHolders
 
         protected override void InitializeViews()
         {
-            cardColor = ItemView.Context.SafeGetColor(Resource.Color.card);
+            cardColor = ItemView.Context.SafeGetColor(Resource.Color.cardBackground);
             backgroundColor = ItemView.Context.SafeGetColor(Resource.Color.background);
 
             groupItemBackground = ItemView.FindViewById<View>(MainLogGroupBackground);

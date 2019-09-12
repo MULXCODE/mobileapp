@@ -10,7 +10,7 @@
         android:id="@+id/SummaryCard"
         android:elevation="2dp"
         android:minHeight="114dp"
-        app:cardBackgroundColor="@color/card"
+        app:cardBackgroundColor="@color/cardBackground"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
@@ -108,7 +108,7 @@
         android:layout_height="wrap_content">
         <android.support.v7.widget.CardView
             android:id="@+id/BarChartCard"
-            app:cardBackgroundColor="@color/card"
+            app:cardBackgroundColor="@color/cardBackground"
             android:elevation="2dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -198,7 +198,7 @@
         </android.support.v7.widget.CardView>
         <android.support.v7.widget.CardView
             android:id="@+id/PieChartCard"
-            app:cardBackgroundColor="@color/card"
+            app:cardBackgroundColor="@color/cardBackground"
             android:elevation="2dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"

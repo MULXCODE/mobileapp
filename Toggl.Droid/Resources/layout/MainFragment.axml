@@ -39,7 +39,7 @@
       android:focusable="true"
       android:elevation="8dp"
       android:layout_gravity="bottom|center_horizontal"
-      android:background="@color/card"
+      android:background="@color/cardBackground"
       android:foreground="?android:attr/selectableItemBackground"
       app:layout_behavior="toggl.droid.presentation.RunningTimeEntrySheetBehavior">
         <include layout="@layout/MainRunningTimeEntry" />

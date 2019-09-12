@@ -38,7 +38,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/MainLogContentView"
         android:elevation="1dp"
-        android:background="@color/card"
+        android:background="@color/cardBackground"
         android:layout_height="72dp"
         android:layout_width="match_parent">
         <android.support.constraint.Guideline

@@ -71,7 +71,7 @@
                 android:layout_width="match_parent" />
             <LinearLayout
                 android:orientation="vertical"
-                android:background="@color/card"
+                android:background="@color/cardBackground"
                 android:layout_height="70dp"
                 android:layout_width="match_parent">
                 <View
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent" />
             <LinearLayout
                 android:orientation="vertical"
-                android:background="@color/card"
+                android:background="@color/cardBackground"
                 android:layout_height="70dp"
                 android:layout_width="match_parent">
                 <View
@@ -130,7 +130,7 @@
                 android:layout_width="match_parent" />
             <LinearLayout
                 android:orientation="vertical"
-                android:background="@color/card"
+                android:background="@color/cardBackground"
                 android:layout_height="70dp"
                 android:layout_width="match_parent">
                 <View

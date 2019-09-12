@@ -62,7 +62,7 @@ namespace Toggl.Droid.Fragments
         {
             base.OnViewCreated(view, savedInstanceState);
 
-            refreshLayout.SetProgressBackgroundColorSchemeResource(Resource.Color.card);
+            refreshLayout.SetProgressBackgroundColorSchemeResource(Resource.Color.cardBackground);
             refreshLayout.SetColorSchemeResources(new[] { Resource.Color.primaryText });
 
             stopButton.Rx().BindAction(ViewModel.StopTimeEntry, _ => TimeEntryStopOrigin.Manual).DisposedBy(DisposeBag);

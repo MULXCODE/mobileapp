@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:animateLayoutChanges="true"
-    android:background="@color/card"
+    android:background="@color/cardBackground"
     android:layout_width="280dp"
     android:layout_height="match_parent">
     <ImageView
