@@ -150,16 +150,17 @@ namespace Toggl.Core.UI.ViewModels
 
             var queryByType = queryByTypeSubject
                 .AsObservable()
-                .SelectMany(type => interactorFactory.GetAutocompleteSuggestions(new QueryInfo("", type)).Execute());
+                .Select(type => new QueryInfo("", type));
 
             var queryByText = textFieldInfo
                 .SelectMany(setBillableValues)
                 .Select(QueryInfo.ParseFieldInfo)
                 .Do(onParsedQuery)
-                .ObserveOn(schedulerProvider.BackgroundScheduler)
-                .SelectMany(query => interactorFactory.GetAutocompleteSuggestions(query).Execute());
+                .ObserveOn(schedulerProvider.BackgroundScheduler);
 
             Suggestions = Observable.Merge(queryByText, queryByType)
+                .SelectMany(query => interactorFactory.GetAutocompleteSuggestions(query).Execute())
+                .Select(items => items.ToList()) // This is line is needed for now to read objects from realm .ObserveOn(schedulerProvider.BackgroundScheduler)
                 .Select(filter)
                 .Select(group)
                 .CombineLatest(expandedProjects, (groups, _) => groups)
@@ -487,9 +488,11 @@ namespace Toggl.Core.UI.ViewModels
                 origin = paramOrigin;
             }
 
+            Close();
+
             return interactorFactory.CreateTimeEntry(timeEntry, origin)
                 .Execute()
-                .Do(_ => Close());
+                .SubscribeOn(schedulerProvider.BackgroundScheduler);
         }
 
         private void onParsedQuery(QueryInfo parsedQuery)

@@ -5,8 +5,8 @@
         android:width="1dp"
         android:color="#26000000" />
     <size 
-        android:width="16dp" 
-        android:height="16dp"/>
+        android:width="18dp" 
+        android:height="18dp"/>
     <corners 
         android:radius="2dp"/> 
 </shape>

@@ -40,24 +40,21 @@ namespace Toggl.Core.UI.ViewModels
         private const int ratingViewTimeout = 5;
         private const double throttlePeriodInSeconds = 0.1;
 
-        private bool isEditViewOpen;
         private bool noWorkspaceViewPresented;
         private bool hasStopButtonEverBeenUsed;
         private bool noDefaultWorkspaceViewPresented;
         private bool shouldHideRatingViewIfStillVisible = false;
-        private object isEditViewOpenLock = new object();
 
-        private readonly ITogglDataSource dataSource;
         private readonly ISyncManager syncManager;
+        private readonly IPlatformInfo platformInfo;
+        private readonly ITogglDataSource dataSource;
         private readonly IUserPreferences userPreferences;
+        private readonly IRxActionFactory rxActionFactory;
         private readonly IAnalyticsService analyticsService;
+        private readonly ISchedulerProvider schedulerProvider;
         private readonly IInteractorFactory interactorFactory;
-        private readonly INavigationService navigationService;
         private readonly IAccessibilityService accessibilityService;
         private readonly IAccessRestrictionStorage accessRestrictionStorage;
-        private readonly IRxActionFactory rxActionFactory;
-        private readonly ISchedulerProvider schedulerProvider;
-        private readonly IPlatformInfo platformInfo;
 
         private readonly RatingViewExperiment ratingViewExperiment;
         private readonly CompositeDisposable disposeBag = new CompositeDisposable();
@@ -90,7 +87,7 @@ namespace Toggl.Core.UI.ViewModels
         public UIAction OpenSettings { get; private set; }
         public UIAction OpenSyncFailures { get; private set; }
         public InputAction<bool> StartTimeEntry { get; private set; }
-        public InputAction<(long[], EditTimeEntryOrigin)> SelectTimeEntry { get; private set; }
+        public InputAction<EditTimeEntryInfo> SelectTimeEntry { get; private set; }
         public InputAction<TimeEntryStopOrigin> StopTimeEntry { get; private set; }
         public RxAction<ContinueTimeEntryInfo, IThreadSafeTimeEntry> ContinueTimeEntry { get; private set; }
 
@@ -246,7 +243,7 @@ namespace Toggl.Core.UI.ViewModels
             OpenReports = rxActionFactory.FromAsync(openReports);
             OpenSettings = rxActionFactory.FromAsync(openSettings);
             OpenSyncFailures = rxActionFactory.FromAsync(openSyncFailures);
-            SelectTimeEntry = rxActionFactory.FromAsync<(long[], EditTimeEntryOrigin)>(timeEntrySelected);
+            SelectTimeEntry = rxActionFactory.FromAsync<EditTimeEntryInfo>(timeEntrySelected);
             ContinueTimeEntry = rxActionFactory.FromObservable<ContinueTimeEntryInfo, IThreadSafeTimeEntry>(continueTimeEntry);
             StartTimeEntry = rxActionFactory.FromAsync<bool>(startTimeEntry, IsTimeEntryRunning.Invert());
             StopTimeEntry = rxActionFactory.FromObservable<TimeEntryStopOrigin>(stopTimeEntry, IsTimeEntryRunning);
@@ -427,27 +424,12 @@ namespace Toggl.Core.UI.ViewModels
                 .Do(_ => OnboardingStorage.SetTimeEntryContinued());
         }
 
-        private async Task timeEntrySelected((long[], EditTimeEntryOrigin) timeEntrySelection)
+        private async Task timeEntrySelected(EditTimeEntryInfo editTimeEntryInfo)
         {
-            if (isEditViewOpen)
-                return;
-
-            var (timeEntryIds, origin) = timeEntrySelection;
-
             OnboardingStorage.TimeEntryWasTapped();
 
-            lock (isEditViewOpenLock)
-            {
-                isEditViewOpen = true;
-            }
-
-            analyticsService.EditViewOpened.Track(origin);
-            await navigate<EditTimeEntryViewModel, long[]>(timeEntryIds);
-
-            lock (isEditViewOpenLock)
-            {
-                isEditViewOpen = false;
-            }
+            analyticsService.EditViewOpened.Track(editTimeEntryInfo.Origin);
+            await navigate<EditTimeEntryViewModel, long[]>(editTimeEntryInfo.Ids);
         }
 
         private async Task refresh()

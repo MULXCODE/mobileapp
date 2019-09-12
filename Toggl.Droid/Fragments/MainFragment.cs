@@ -30,7 +30,9 @@ using Toggl.Droid.ViewHelpers;
 using Toggl.Shared.Extensions;
 using static Android.Content.Context;
 using static Toggl.Core.Sync.SyncProgress;
+using static Toggl.Core.Analytics.EditTimeEntryOrigin;
 using FoundationResources = Toggl.Shared.Resources;
+using System.Linq;
 
 namespace Toggl.Droid.Fragments
 {
@@ -72,7 +74,7 @@ namespace Toggl.Droid.Fragments
 
             runningEntryCardFrame.Rx().Tap()
                 .WithLatestFrom(ViewModel.CurrentRunningTimeEntry,
-                    (_, te) => (new[] { te.Id }, EditTimeEntryOrigin.RunningTimeEntryCard))
+                    (_, te) => new EditTimeEntryInfo(RunningTimeEntryCard, te.Id))
                 .Subscribe(ViewModel.SelectTimeEntry.Inputs)
                 .DisposedBy(DisposeBag);
 
@@ -308,15 +310,15 @@ namespace Toggl.Droid.Fragments
             }
         }
 
-        private (long[], EditTimeEntryOrigin) editEventInfo(LogItemViewModel item)
+        private EditTimeEntryInfo editEventInfo(LogItemViewModel item)
         {
             var origin = item.IsTimeEntryGroupHeader
-                ? EditTimeEntryOrigin.GroupHeader
+                ? GroupHeader
                 : item.BelongsToGroup
-                    ? EditTimeEntryOrigin.GroupTimeEntry
-                    : EditTimeEntryOrigin.SingleTimeEntry;
+                    ? GroupTimeEntry
+                    : SingleTimeEntry;
 
-            return (item.RepresentedTimeEntriesIds, origin);
+            return new EditTimeEntryInfo(origin, item.RepresentedTimeEntriesIds);
         }
 
         private void onTimeEntryCardVisibilityChanged(bool visible)

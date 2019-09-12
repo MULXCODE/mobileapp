@@ -82,12 +82,14 @@ namespace Toggl.Droid.Activities
 
             if (startDate == 0 || endDate == 0)
             {
-                reportsRequestedStartDate = null;
-                reportsRequestedEndDate = null;
+                reportsRequestedStartDate = default(DateTimeOffset);
+                reportsRequestedEndDate = default(DateTimeOffset);
             }
-
-            reportsRequestedStartDate = DateTimeOffset.FromUnixTimeSeconds(startDate);
-            reportsRequestedEndDate = DateTimeOffset.FromUnixTimeSeconds(endDate);
+            else
+            {
+                reportsRequestedStartDate = DateTimeOffset.FromUnixTimeSeconds(startDate);
+                reportsRequestedEndDate = DateTimeOffset.FromUnixTimeSeconds(endDate);    
+            }
         }
 
         private void restoreFragmentsViewModels()

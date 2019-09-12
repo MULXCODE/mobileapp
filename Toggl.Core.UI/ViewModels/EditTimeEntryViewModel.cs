@@ -471,7 +471,8 @@ namespace Toggl.Core.UI.ViewModels
 
             OnboardingStorage.EditedTimeEntry();
 
-            var timeEntries = await interactorFactory.GetMultipleTimeEntriesById(TimeEntryIds).Execute();
+            var timeEntries = await interactorFactory
+                .GetMultipleTimeEntriesById(TimeEntryIds).Execute();
 
             var duration = await durationSubject.FirstAsync();
             var commonTimeEntryData = new EditTimeEntryDto
@@ -491,12 +492,13 @@ namespace Toggl.Core.UI.ViewModels
                 .Select(timeEntry => applyDataFromTimeEntry(commonTimeEntryData, timeEntry))
                 .ToArray();
 
-            interactorFactory
+            close(reason);
+
+            await interactorFactory
                 .UpdateMultipleTimeEntries(timeEntriesDtos)
                 .Execute()
-                .ObserveOn(schedulerProvider.MainScheduler)
-                .SubscribeToErrorsAndCompletion((Exception ex) => close(reason), () => close(reason))
-                .DisposedBy(disposeBag);
+                .Catch(Observable.Empty<IEnumerable<IThreadSafeTimeEntry>>())
+                .SubscribeOn(schedulerProvider.BackgroundScheduler);
         }
 
         private EditTimeEntryDto applyDataFromTimeEntry(EditTimeEntryDto commonTimeEntryData, IThreadSafeTimeEntry timeEntry)
