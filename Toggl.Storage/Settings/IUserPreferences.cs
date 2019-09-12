@@ -19,8 +19,6 @@ namespace Toggl.Storage.Settings
 
         IObservable<bool> SwipeActionsEnabled { get; }
 
-        Theme AppTheme { get; }
-
         bool IsManualModeEnabled { get; }
 
         bool AreRunningTimerNotificationsEnabled { get; }
@@ -48,14 +46,5 @@ namespace Toggl.Storage.Settings
         void SetTimeSpanBeforeCalendarNotifications(TimeSpan timeSpan);
 
         void SetSwipeActionsEnabled(bool enabled);
-
-        void SetTheme(Theme theme);
-    }
-
-    public enum Theme
-    {
-        SystemDefault = 0,
-        Light = 1,
-        Dark = 2
     }
 }

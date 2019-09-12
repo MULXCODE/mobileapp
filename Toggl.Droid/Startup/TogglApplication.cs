@@ -3,13 +3,14 @@ using Android.App;
 using Android.Arch.Lifecycle;
 using Android.Content;
 using Android.Runtime;
-using Android.Support.V7.App;
 using Android.Views.Accessibility;
 using Java.Interop;
 using Toggl.Core;
 using Toggl.Core.UI;
 using Toggl.Droid.BroadcastReceivers;
 using Toggl.Droid.Extensions;
+using Toggl.Droid.Helper;
+using static Android.Support.V7.App.AppCompatDelegate;
 
 namespace Toggl.Droid
 {
@@ -27,16 +28,15 @@ namespace Toggl.Droid
 
         public override void OnCreate()
         {
+            DefaultNightMode = QApis.AreAvailable ? ModeNightFollowSystem : ModeNightAuto;
+
             base.OnCreate();
             ProcessLifecycleOwner.Get().Lifecycle.AddObserver(this);
 
 #if !DEBUG
             Firebase.FirebaseApp.InitializeApp(this);
 #endif
-
             AndroidDependencyContainer.EnsureInitialized(Context);
-            AppCompatDelegate.DefaultNightMode = AndroidDependencyContainer.Instance
-                .UserPreferences.AppTheme.NightModeFlag();
             var app = new AppStart(AndroidDependencyContainer.Instance);
             app.LoadLocalizationConfiguration();
             var accessLevel = app.GetAccessLevel();

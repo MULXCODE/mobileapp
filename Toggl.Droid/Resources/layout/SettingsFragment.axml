@@ -261,44 +261,6 @@
                 android:layout_height="0.5dp"
                 android:layout_width="match_parent" />
             <FrameLayout
-                android:id="@+id/SettingsAppTheme"
-                android:clickable="true"
-                android:background="?attr/selectableItemBackground"
-                android:layout_height="56dp"
-                android:layout_width="match_parent">
-                <TextView
-                    android:id="@+id/SettingsAppThemeTextView"
-                    tools:text="Use system setting"
-                    android:textSize="15sp"
-                    android:lineSpacingExtra="5sp"
-                    android:textColor="@color/primaryText"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/SettingsAppThemeLabel"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="4sp"
-                    tools:text="App Theme"
-                    android:textColor="@color/secondaryText"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <ImageView
-                    android:src="@drawable/dropdown"
-                    android:layout_marginRight="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical" />
-            </FrameLayout>
-            <View
-              android:background="@color/separator"
-              android:layout_height="0.5dp"
-              android:layout_width="match_parent" />
-            <FrameLayout
                 android:id="@+id/SettingsIs24HourModeView"
                 android:clickable="true"
                 android:background="?attr/selectableItemBackground"

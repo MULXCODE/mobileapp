@@ -31,7 +31,6 @@ namespace Toggl.Core.UI.ViewModels
     [Preserve(AllMembers = true)]
     public sealed class SettingsViewModel : ViewModel
     {
-        private readonly ISubject<Theme> themeSubject;
         private readonly ISubject<Unit> loggingOutSubject = new Subject<Unit>();
         private readonly ISubject<bool> isFeedbackSuccessViewShowing = new Subject<bool>();
         private readonly ISubject<bool> calendarPermissionGranted = new BehaviorSubject<bool>(false);
@@ -73,7 +72,6 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<bool> IsCalendarSmartRemindersVisible { get; }
         public IObservable<string> CalendarSmartReminders { get; }
         public IObservable<bool> SwipeActionsEnabled { get; }
-        public IObservable<Theme> AppTheme { get; }
 
         public UIAction OpenCalendarSettings { get; }
         public UIAction OpenCalendarSmartReminders { get; }
@@ -92,7 +90,6 @@ namespace Toggl.Core.UI.ViewModels
         public UIAction SelectBeginningOfWeek { get; }
         public UIAction ToggleManualMode { get; }
         public UIAction ToggleSwipeActions { get; }
-        public UIAction PickAppTheme { get; }
 
         public SettingsViewModel(
             ITogglDataSource dataSource,
@@ -127,8 +124,6 @@ namespace Toggl.Core.UI.ViewModels
             this.interactorFactory = interactorFactory;
             this.onboardingStorage = onboardingStorage;
             this.permissionsChecker = permissionsChecker;
-
-            themeSubject = new BehaviorSubject<Theme>(userPreferences.AppTheme);
 
             IsSynced =
                 syncManager.ProgressObservable
@@ -231,10 +226,6 @@ namespace Toggl.Core.UI.ViewModels
             SwipeActionsEnabled = userPreferences.SwipeActionsEnabled
                 .AsDriver(schedulerProvider);
 
-            AppTheme = themeSubject
-                .DistinctUntilChanged()
-                .AsDriver(schedulerProvider);
-
             OpenCalendarSettings = rxActionFactory.FromAsync(openCalendarSettings);
             OpenCalendarSmartReminders = rxActionFactory.FromAsync(openCalendarSmartReminders);
             OpenNotificationSettings = rxActionFactory.FromAsync(openNotificationSettings);
@@ -252,7 +243,6 @@ namespace Toggl.Core.UI.ViewModels
             ToggleTimeEntriesGrouping = rxActionFactory.FromAsync(toggleTimeEntriesGrouping);
             ToggleManualMode = rxActionFactory.FromAction(toggleManualMode);
             ToggleSwipeActions = rxActionFactory.FromAction(toggleSwipeActions);
-            PickAppTheme = rxActionFactory.FromAsync(pickNewTheme);
         }
 
         public override async Task Initialize()
@@ -457,39 +447,6 @@ namespace Toggl.Core.UI.ViewModels
         private void toggleSwipeActions()
         {
             userPreferences.SetSwipeActionsEnabled(!userPreferences.AreSwipeActionsEnabled);
-        }
-
-        private async Task pickNewTheme()
-        {
-            var currentTheme = userPreferences.AppTheme;
-            var currentThemeIndex = themeIndexInSelectView(currentTheme);
-            var selectOptions = new[]
-            {
-                new SelectOption<Theme>(Theme.SystemDefault, Resources.SystemDefault),
-                new SelectOption<Theme>(Theme.Light, Resources.Light),
-                new SelectOption<Theme>(Theme.Dark, Resources.Dark)
-            };
-
-            var newTheme = await View
-                .Select(Resources.AppTitle, selectOptions, currentThemeIndex);
-
-            themeSubject.OnNext(newTheme);
-            userPreferences.SetTheme(newTheme);
-
-            int themeIndexInSelectView(Theme theme)
-            {
-                switch (theme)
-                {
-                    case Theme.SystemDefault:
-                        return 0;
-                    case Theme.Light:
-                        return 1;
-                    case Theme.Dark:
-                        return 2;
-                    default:
-                        return 0;
-                }
-            }
         }
     }
 }

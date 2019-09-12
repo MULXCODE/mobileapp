@@ -97,10 +97,6 @@ namespace Toggl.Droid.Fragments
                 .Subscribe(showFeedbackSuccessToast)
                 .DisposedBy(DisposeBag);
 
-            ViewModel.AppTheme
-                .Subscribe(setupAppTheme)
-                .DisposedBy(DisposeBag);
-
             logoutView.Rx()
                 .BindAction(ViewModel.TryLogout)
                 .DisposedBy(DisposeBag);
@@ -160,33 +156,6 @@ namespace Toggl.Droid.Fragments
             smartRemindersView.Rx().Tap()
                 .Subscribe(ViewModel.OpenCalendarSmartReminders.Inputs)
                 .DisposedBy(DisposeBag);
-
-            appThemeView.Rx().Tap()
-                .Subscribe(ViewModel.PickAppTheme.Inputs)
-                .DisposedBy(DisposeBag);
-        }
-
-        private void setupAppTheme(Theme theme)
-        {
-            appThemeTextView.Text = theme.Name();
-            var currentNightModeFlag = DefaultNightMode;
-            var newNightModeFlag = theme.NightModeFlag();
-
-            if (currentNightModeFlag == newNightModeFlag)
-                return;
-
-            Confirm(RestartNeeded, RestartNeededMessage, Yes, No)
-                .Subscribe(onRestartConfirmation)
-                .DisposedBy(DisposeBag);
-
-            void onRestartConfirmation(bool shouldRestart)
-            {
-                if (!shouldRestart)
-                    return;
-
-                DefaultNightMode = newNightModeFlag;
-                Activity.Recreate();
-            }
         }
 
         public void ScrollToTop()

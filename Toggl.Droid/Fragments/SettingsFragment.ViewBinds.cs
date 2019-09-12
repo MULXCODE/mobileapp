@@ -19,7 +19,6 @@ namespace Toggl.Droid.Fragments
         private View smartRemindersViewSeparator;
         private View groupTimeEntriesView;
         private View defaultWorkspaceView;
-        private View appThemeView;
 
         private TextView helpView;
         private TextView calendarSettingsView;
@@ -51,8 +50,6 @@ namespace Toggl.Droid.Fragments
         private TextView settingsToggleManualModeExplanation;
         private TextView feedbackView;
         private TextView logoutView;
-        private TextView appThemeTextView;
-        private TextView appThemeLabel;
 
         private Switch is24hoursModeSwitch;
         private Switch manualModeSwitch;
@@ -77,8 +74,7 @@ namespace Toggl.Droid.Fragments
             stoppedTimerNotificationsView = fragmentView.FindViewById(Resource.Id.SettingsStoppedTimerNotificationsView);
             groupTimeEntriesView = fragmentView.FindViewById(Resource.Id.GroupTimeEntriesView);
             defaultWorkspaceView = fragmentView.FindViewById(Resource.Id.DefaultWorkspaceView);
-            appThemeView = fragmentView.FindViewById(Resource.Id.SettingsAppTheme);
-
+      
             logoutView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsLogoutButton);
             helpView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsHelpButton);
             feedbackView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsSubmitFeedbackButton);
@@ -109,9 +105,7 @@ namespace Toggl.Droid.Fragments
             aboutLabel = fragmentView.FindViewById<TextView>(Resource.Id.AboutLabel);
             settingsToggleManualModeLabel = fragmentView.FindViewById<TextView>(Resource.Id.SettingsToggleManualModeLabel);
             settingsToggleManualModeExplanation = fragmentView.FindViewById<TextView>(Resource.Id.SettingsToggleManualModeExplanation);
-            appThemeTextView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsAppThemeTextView);
-            appThemeLabel = fragmentView.FindViewById<TextView>(Resource.Id.SettingsAppThemeLabel);
-            
+
             manualModeSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsIsManualModeEnabledSwitch);
             is24hoursModeSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsIs24HourModeSwitch);
             runningTimerNotificationsSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsAreRunningTimerNotificationsEnabledSwitch);
@@ -122,7 +116,6 @@ namespace Toggl.Droid.Fragments
 
             scrollView = fragmentView.FindViewById<NestedScrollView>(Resource.Id.ScrollView);
 
-            appThemeLabel.Text = Shared.Resources.AppTheme;
             logoutView.Text = Shared.Resources.SignOutOfToggl;
             helpView.Text = Shared.Resources.Help;
             feedbackView.Text = Shared.Resources.SubmitFeedback;
