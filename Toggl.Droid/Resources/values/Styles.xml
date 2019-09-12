@@ -22,6 +22,8 @@
 
     <style name="AppTheme.OutdatedAppStatusBarColor">
         <item name="android:statusBarColor">@color/outdatedStatusBar</item>
+        <item name="android:windowBackground">@color/outdatedStatusBar</item>
+        <item name="android:navigationBarColor">@color/outdatedStatusBar</item>
     </style>
   
     <style name="TextInputLayoutErrorAppearance" parent="@android:style/TextAppearance">

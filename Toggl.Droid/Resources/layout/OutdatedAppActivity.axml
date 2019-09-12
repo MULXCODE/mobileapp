@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#D2D2D3"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.CardView
@@ -33,7 +32,7 @@
             <TextView
                 android:id="@+id/OutdatedAppMessageView"
                 android:textSize="16sp"
-                android:textColor="#99000000"
+                android:textColor="@color/primaryText"
                 android:lineSpacingExtra="7sp"
                 tools:text="Seems you haven\u{2019}t updated the app\nfor quite some time\u{2026} Please update\nyour app to continue."
                 android:layout_marginTop="174dp"
@@ -47,7 +46,7 @@
                 android:gravity="center"
                 android:textStyle="normal"
                 android:textAllCaps="true"
-                android:textColor="#328fff"
+                android:textColor="@color/accent"
                 android:letterSpacing="0.04"
                 tools:text=" Try Toggl.com "
                 android:fontFamily="sans-serif-medium"
@@ -62,7 +61,7 @@
                 android:gravity="center"
                 android:textAllCaps="true"
                 android:textStyle="normal"
-                android:textColor="#328fff"
+                android:textColor="@color/accent"
                 android:letterSpacing="0.04"
                 tools:text="Update the app"
                 android:fontFamily="sans-serif-medium"
