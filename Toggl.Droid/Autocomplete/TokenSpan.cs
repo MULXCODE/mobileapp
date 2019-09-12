@@ -12,7 +12,6 @@ namespace Toggl.Droid.Autocomplete
         private static readonly int padding;
         private static readonly int tokenHeight;
         private static readonly int cornerRadius;
-        private static readonly float halfPadding;
 
         private readonly Color textColor;
         private readonly Color backgroundColor;
@@ -24,7 +23,15 @@ namespace Toggl.Droid.Autocomplete
 
             tokenHeight = 24.DpToPixels(context);
             padding = margin = cornerRadius = 6.DpToPixels(context);
-            halfPadding = padding / 2.0f;
+        }
+
+        protected TokenSpan(int backgroundColorResourceId, int textColorResourceId, bool shouldOnlyStroke)
+        {
+            var context = Application.Context;
+
+            shouldStrokeOnly = shouldOnlyStroke;
+            textColor = context.SafeGetColor(textColorResourceId);
+            backgroundColor = context.SafeGetColor(backgroundColorResourceId);
         }
 
         protected TokenSpan(Color backgroundColor, Color textColor, bool shouldOnlyStroke)
