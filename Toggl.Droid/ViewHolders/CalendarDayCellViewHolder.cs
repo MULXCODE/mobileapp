@@ -35,15 +35,23 @@ namespace Toggl.Droid.ViewHolders
 
         public void UpdateSelectionState(ReportsDateRangeParameter selectedDateRange)
         {
-            var dayTextColor = ItemView.Context.SafeGetColor(
-                Item.IsSelected(selectedDateRange) || Item.IsToday ? Android.Resource.Color.White
-                : Item.IsInCurrentMonth ? Resource.Color.primaryText : Resource.Color.placeholderText);
+            var dayTextColor = ItemView.Context.SafeGetColor(calculateDayTextColorResource());
 
             dayView.SetTextColor(dayTextColor);
             dayView.RoundLeft = Item.IsStartOfSelectedPeriod(selectedDateRange);
             dayView.RoundRight = Item.IsEndOfSelectedPeriod(selectedDateRange);
             dayView.IsSelected = Item.IsSelected(selectedDateRange);
             dayView.IsSingleDaySelection = selectedDateRange.StartDate == selectedDateRange.EndDate;
+
+            int calculateDayTextColorResource()
+            {
+                if (Item.IsSelected(selectedDateRange) || Item.IsToday)
+                    return Android.Resource.Color.White;
+
+                return Item.IsInCurrentMonth
+                    ? Resource.Color.primaryText
+                    : Resource.Color.placeholderText;
+            }
         }
     }
 }
