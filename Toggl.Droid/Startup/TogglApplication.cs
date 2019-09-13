@@ -28,7 +28,7 @@ namespace Toggl.Droid
 
         public override void OnCreate()
         {
-            DefaultNightMode = QApis.AreAvailable ? ModeNightFollowSystem : ModeNightAuto;
+            DefaultNightMode = ModeNightYes;
 
             base.OnCreate();
             ProcessLifecycleOwner.Get().Lifecycle.AddObserver(this);
