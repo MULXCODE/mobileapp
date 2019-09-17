@@ -199,9 +199,13 @@ namespace Toggl.Droid.Views
             othersPaint.TextAlign = Paint.Align.Center;
             var originalTextSize = othersPaint.TextSize;
 
-            for (var barIndex = 0; barIndex < bars.Count; barIndex++)
+            var barsToRender = bars;
+            var labelsToRender = horizontalLabels;
+            var numberOfLabels = labelsToRender.Count;
+
+            for (var i = 0; i < barsToRender.Count; i++)
             {
-                var bar = bars[barIndex];
+                var bar = barsToRender[i];
                 var barRight = left + actualBarWidth;
                 var barHasBillablePercentage = bar.BillablePercent > 0f;
                 var barHasNonBillablePercentage = bar.NonBillablePercent > 0f;
@@ -221,14 +225,16 @@ namespace Toggl.Droid.Views
                     canvas.DrawRect(left, nonBillableTop, barRight, billableTop, nonBillablePaint);
                 }
 
-                if (willDrawDayLabels)
+                if (willDrawDayLabels && numberOfLabels >= i)
                 {
+                    var horizontalLabel = labelsToRender[i];
+
                     var middleOfTheBar = left + (barRight - left) / 2f;
-                    var dayOfWeekText = horizontalLabels[barIndex].DayOfWeek;
+                    var dayOfWeekText = horizontalLabel.DayOfWeek;
                     othersPaint.TextSize = originalTextSize;
                     canvas.DrawText(dayOfWeekText, middleOfTheBar, dayLabelsY, othersPaint);
 
-                    var dateText = horizontalLabels[barIndex].Date;
+                    var dateText = horizontalLabel.Date;
                     setTextSizeFromWidth(dateText, othersPaint, othersPaint.TextSize, actualBarWidth);
                     othersPaint.GetTextBounds(dateText, 0, dateText.Length, bounds);
                     canvas.DrawText(dateText, middleOfTheBar, dayLabelsY + bounds.Height() + dateTopPadding, othersPaint);

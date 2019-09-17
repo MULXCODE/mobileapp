@@ -16,11 +16,13 @@ namespace Toggl.Droid.Activities
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public sealed partial class SelectProjectActivity : ReactiveActivity<SelectProjectViewModel>
     {
+        private bool hasToggledTasks = false;
         public SelectProjectActivity() : base(
             Resource.Layout.SelectProjectActivity,
             Resource.Style.AppTheme_Light_WhiteBackground,
             Transitions.SlideInFromBottom)
-        { }
+        {
+        }
 
         public SelectProjectActivity(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
@@ -40,7 +42,7 @@ namespace Toggl.Droid.Activities
                 .DisposedBy(DisposeBag);
 
             adapter.ItemsUpdateCompleted
-                .Subscribe(scrollToTop)
+                .Subscribe(scrollToTopIfHasntToggledTasks)
                 .DisposedBy(DisposeBag);
 
             adapter.ItemTapObservable
@@ -48,6 +50,7 @@ namespace Toggl.Droid.Activities
                 .DisposedBy(DisposeBag);
 
             adapter.ToggleTasks
+                .Do(() => hasToggledTasks = true)
                 .Subscribe(ViewModel.ToggleTaskSuggestions.Inputs)
                 .DisposedBy(DisposeBag);
 
@@ -63,9 +66,14 @@ namespace Toggl.Droid.Activities
                 .Subscribe(ViewModel.CloseWithDefaultResult)
                 .DisposedBy(DisposeBag);
 
-            void scrollToTop()
+            void scrollToTopIfHasntToggledTasks()
             {
-                recyclerView.GetLayoutManager().ScrollToPosition(0);
+                if (!hasToggledTasks)
+                {
+                    recyclerView.GetLayoutManager().ScrollToPosition(0);
+                }
+
+                hasToggledTasks = false;
             }
         }
     }

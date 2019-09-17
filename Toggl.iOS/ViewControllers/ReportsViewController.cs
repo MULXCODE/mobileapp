@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Reports;
 using Toggl.Core.UI.Extensions;
@@ -13,6 +15,7 @@ using Toggl.Core.UI.ViewModels.Reports;
 using Toggl.Core.UI.Views;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
+using Toggl.iOS.Helper;
 using Toggl.iOS.Presentation;
 using Toggl.iOS.Views.Reports;
 using Toggl.iOS.ViewSources;
@@ -42,6 +45,7 @@ namespace Toggl.iOS.ViewControllers
         private IDisposable calendarSizeDisposable;
         private ReportsCalendarViewController calendarViewController;
         private nfloat calendarHeight => CalendarContainer.Bounds.Height;
+        private ISubject<Unit> viewDidAppearSubject = new Subject<Unit>();
         private ReportsOverviewCardView overview = ReportsOverviewCardView.CreateFromNib();
         private ReportsBarChartCardView barChart = ReportsBarChartCardView.CreateFromNib();
 
@@ -154,6 +158,29 @@ namespace Toggl.iOS.ViewControllers
                 .BindAction(ViewModel.SelectWorkspace)
                 .DisposedBy(DisposeBag);
 
+            //Handoff
+            viewDidAppearSubject.AsObservable()
+                .CombineLatest(
+                    ViewModel.WorkspaceId,
+                    ViewModel.StartDate,
+                    ViewModel.EndDate,
+                    (_, workspaceId, start, end) => createUserActivity(workspaceId, start, end))
+                .Subscribe(updateUserActivity);
+
+            NSUserActivity createUserActivity(long workspaceId, DateTimeOffset start, DateTimeOffset end)
+            {
+                var userActivity = new NSUserActivity(Handoff.Action.Reports);
+                userActivity.EligibleForHandoff = true;
+                userActivity.WebPageUrl = Handoff.Url.Reports(workspaceId, start, end);
+                return userActivity;
+            }
+
+            void updateUserActivity(NSUserActivity userActivity)
+            {
+                UserActivity = userActivity;
+                UserActivity.BecomeCurrent();
+            }
+ 
             void toggleCalendar()
             {
                 if (calendarIsVisible)
@@ -200,6 +227,8 @@ namespace Toggl.iOS.ViewControllers
             }
 
             alreadyLoadedCalendar = true;
+
+            viewDidAppearSubject.OnNext(Unit.Default);
         }
 
         public void ScrollToTop()

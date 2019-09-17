@@ -18,7 +18,7 @@ namespace Toggl.Droid.Fragments
 {
     public sealed partial class SelectColorFragment : ReactiveDialogFragment<SelectColorViewModel>
     {
-        private const int customColorEnabledHeight = 425;
+        private const int customColorEnabledHeight = 437;
         private const int customColorDisabledHeight = 270;
 
         public SelectColorFragment() { }
@@ -39,12 +39,12 @@ namespace Toggl.Droid.Fragments
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
-            
+
             selectableColorsAdapter.ItemTapObservable
                 .Select(x => x.Color)
                 .Subscribe(ViewModel.SelectColor.Inputs)
                 .DisposedBy(DisposeBag);
-            
+
             ViewModel.Hue
                 .Subscribe(hueSaturationPicker.Rx().HueObserver())
                 .DisposedBy(DisposeBag);

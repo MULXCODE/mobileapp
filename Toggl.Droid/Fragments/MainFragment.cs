@@ -30,7 +30,9 @@ using Toggl.Droid.ViewHelpers;
 using Toggl.Shared.Extensions;
 using static Android.Content.Context;
 using static Toggl.Core.Sync.SyncProgress;
+using static Toggl.Core.Analytics.EditTimeEntryOrigin;
 using FoundationResources = Toggl.Shared.Resources;
+using System.Linq;
 
 namespace Toggl.Droid.Fragments
 {
@@ -39,6 +41,7 @@ namespace Toggl.Droid.Fragments
         private const int snackbarDuration = 5000;
         private NotificationManager notificationManager;
         private MainRecyclerAdapter mainRecyclerAdapter;
+        private MainRecyclerViewTouchCallback touchCallback;
         private LinearLayoutManager layoutManager;
         private bool shouldShowRatingViewOnResume;
         private ISubject<bool> visibilityChangedSubject = new BehaviorSubject<bool>(false);
@@ -61,7 +64,7 @@ namespace Toggl.Droid.Fragments
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
-            
+
             stopButton.Rx().BindAction(ViewModel.StopTimeEntry, _ => TimeEntryStopOrigin.Manual).DisposedBy(DisposeBag);
 
             playButton.Rx().BindAction(ViewModel.StartTimeEntry, _ => true).DisposedBy(DisposeBag);
@@ -69,7 +72,7 @@ namespace Toggl.Droid.Fragments
 
             runningEntryCardFrame.Rx().Tap()
                 .WithLatestFrom(ViewModel.CurrentRunningTimeEntry,
-                    (_, te) => (new[] { te.Id }, EditTimeEntryOrigin.RunningTimeEntryCard))
+                    (_, te) => new EditTimeEntryInfo(RunningTimeEntryCard, te.Id))
                 .Subscribe(ViewModel.SelectTimeEntry.Inputs)
                 .DisposedBy(DisposeBag);
 
@@ -139,6 +142,7 @@ namespace Toggl.Droid.Fragments
                 RatingViewModel = ViewModel.RatingViewModel,
             };
             mainRecyclerAdapter.SetupRatingViewVisibility(shouldShowRatingViewOnResume);
+            touchCallback = new MainRecyclerViewTouchCallback(mainRecyclerAdapter);
 
             setupRecycler();
 
@@ -186,7 +190,12 @@ namespace Toggl.Droid.Fragments
                 .DisposedBy(DisposeBag);
             Activity.BindIdleTimer(notificationManager, ViewModel.IsTimeEntryRunning, ViewModel.ShouldShowStoppedTimeEntryNotification)
                 .DisposedBy(DisposeBag);
-            setupItemTouchHelper(mainRecyclerAdapter);
+
+            ViewModel.SwipeActionsEnabled
+                .Subscribe(onSwipeActionsChanged)
+                .DisposedBy(DisposeBag);
+
+            setupItemTouchHelper(touchCallback);
 
             ViewModel.TimeEntriesCount
                 .Subscribe(timeEntriesCountSubject)
@@ -225,11 +234,11 @@ namespace Toggl.Droid.Fragments
             var projectIsPlaceholder = te.Project?.IsPlaceholder() ?? false;
             var taskIsPlaceholder = te.Task?.IsPlaceholder() ?? false;
             return Extensions.TimeEntryExtensions.ToProjectTaskClient(
-                Context, 
-                hasProject, 
-                te.Project?.Name, 
-                te.Project?.Color, 
-                te.Task?.Name, 
+                Context,
+                hasProject,
+                te.Project?.Name,
+                te.Project?.Color,
+                te.Task?.Name,
                 te.Project?.Client?.Name,
                 projectIsPlaceholder,
                 taskIsPlaceholder,
@@ -261,9 +270,8 @@ namespace Toggl.Droid.Fragments
             mainRecyclerView.SetAdapter(mainRecyclerAdapter);
         }
 
-        private void setupItemTouchHelper(MainRecyclerAdapter mainAdapter)
+        private void setupItemTouchHelper(MainRecyclerViewTouchCallback callback)
         {
-            var callback = new MainRecyclerViewTouchCallback(mainAdapter);
             var itemTouchHelper = new ItemTouchHelper(callback);
             itemTouchHelper.AttachToRecyclerView(mainRecyclerView);
         }
@@ -306,15 +314,20 @@ namespace Toggl.Droid.Fragments
             }
         }
 
-        private (long[], EditTimeEntryOrigin) editEventInfo(LogItemViewModel item)
+        private EditTimeEntryInfo editEventInfo(LogItemViewModel item)
         {
             var origin = item.IsTimeEntryGroupHeader
-                ? EditTimeEntryOrigin.GroupHeader
+                ? GroupHeader
                 : item.BelongsToGroup
-                    ? EditTimeEntryOrigin.GroupTimeEntry
-                    : EditTimeEntryOrigin.SingleTimeEntry;
+                    ? GroupTimeEntry
+                    : SingleTimeEntry;
 
-            return (item.RepresentedTimeEntriesIds, origin);
+            return new EditTimeEntryInfo(origin, item.RepresentedTimeEntriesIds);
+        }
+
+        private void onSwipeActionsChanged(bool enabled)
+        {
+            touchCallback.AreSwipeActionsEnabled = enabled;
         }
 
         private void onTimeEntryCardVisibilityChanged(bool visible)

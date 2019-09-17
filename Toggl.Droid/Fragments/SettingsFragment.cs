@@ -42,6 +42,10 @@ namespace Toggl.Droid.Fragments
                 .Subscribe(defaultWorkspaceNameTextView.Rx().TextObserver())
                 .DisposedBy(DisposeBag);
 
+            ViewModel.SwipeActionsEnabled
+                .Subscribe(swipeActionsSwitch.Rx().CheckedObserver())
+                .DisposedBy(DisposeBag);
+
             ViewModel.IsManualModeEnabled
                 .Subscribe(manualModeSwitch.Rx().CheckedObserver())
                 .DisposedBy(DisposeBag);
@@ -112,6 +116,10 @@ namespace Toggl.Droid.Fragments
 
             feedbackView.Rx()
                 .BindAction(ViewModel.SubmitFeedback)
+                .DisposedBy(DisposeBag);
+
+            swipeActionsView.Rx()
+                .BindAction(ViewModel.ToggleSwipeActions)
                 .DisposedBy(DisposeBag);
 
             manualModeView.Rx()

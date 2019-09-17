@@ -50,8 +50,8 @@ namespace Toggl.Core.UI.ViewModels
         private bool isDirty => !string.IsNullOrEmpty(textFieldInfo.Value.Description)
                                 || textFieldInfo.Value.Spans.Any(s => s is ProjectSpan || s is TagSpan)
                                 || isBillable.Value
-                                || startTime != parameter.StartTime
-                                || duration != parameter.Duration;
+                                || startTime != parameter?.StartTime
+                                || duration != parameter?.Duration;
 
         private bool hasAnyTags;
         private bool hasAnyProjects;
@@ -150,16 +150,17 @@ namespace Toggl.Core.UI.ViewModels
 
             var queryByType = queryByTypeSubject
                 .AsObservable()
-                .SelectMany(type => interactorFactory.GetAutocompleteSuggestions(new QueryInfo("", type)).Execute());
+                .Select(type => new QueryInfo("", type));
 
             var queryByText = textFieldInfo
                 .SelectMany(setBillableValues)
                 .Select(QueryInfo.ParseFieldInfo)
                 .Do(onParsedQuery)
-                .ObserveOn(schedulerProvider.BackgroundScheduler)
-                .SelectMany(query => interactorFactory.GetAutocompleteSuggestions(query).Execute());
+                .ObserveOn(schedulerProvider.BackgroundScheduler);
 
             Suggestions = Observable.Merge(queryByText, queryByType)
+                .SelectMany(query => interactorFactory.GetAutocompleteSuggestions(query).Execute())
+                .Select(items => items.ToList()) // This is line is needed for now to read objects from realm .ObserveOn(schedulerProvider.BackgroundScheduler)
                 .Select(filter)
                 .Select(group)
                 .CombineLatest(expandedProjects, (groups, _) => groups)
@@ -249,9 +250,13 @@ namespace Toggl.Core.UI.ViewModels
         {
             if (isDirty)
             {
-                var shouldDiscard = await View.ConfirmDestructiveAction(ActionType.DiscardNewTimeEntry);
-                if (!shouldDiscard)
-                    return;
+                var view = View;
+                if (view != null)
+                {
+                    var shouldDiscard = await view.ConfirmDestructiveAction(ActionType.DiscardNewTimeEntry);
+                    if (!shouldDiscard)
+                        return;
+                }
             }
 
             Close();
@@ -568,7 +573,11 @@ namespace Toggl.Core.UI.ViewModels
                         items = items.Prepend(ProjectSuggestion.NoProject(projectSuggestion.WorkspaceId,
                             projectSuggestion.WorkspaceName));
                     }
-
+                    else if (group.First() is TimeEntrySuggestion timeEntrySuggestion)
+                    {
+                        header = timeEntrySuggestion.WorkspaceName;
+                    }
+                    
                     return new SectionModel<string, AutocompleteSuggestion>(header, items);
                 }
             );

@@ -69,11 +69,7 @@ namespace Toggl.Core.UI.ViewModels
 
         public Task<TNavigationOutput> Navigate<TViewModel, TNavigationInput, TNavigationOutput>(TNavigationInput payload)
             where TViewModel : ViewModel<TNavigationInput, TNavigationOutput>
-        {
-            Ensure.Argument.IsNotNull(View, nameof(View));
-
-            return navigationService.Navigate<TViewModel, TNavigationInput, TNavigationOutput>(payload, View);
-        }
+            => navigationService.Navigate<TViewModel, TNavigationInput, TNavigationOutput>(payload, View);
 
         public Task Navigate<TViewModel>()
             where TViewModel : ViewModel<Unit, Unit>

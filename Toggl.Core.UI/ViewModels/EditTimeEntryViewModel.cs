@@ -440,9 +440,13 @@ namespace Toggl.Core.UI.ViewModels
         {
             if (await isDirty())
             {
-                var userConfirmedDiscardingChanges = await View.ConfirmDestructiveAction(ActionType.DiscardEditingChanges);
-                if (!userConfirmedDiscardingChanges)
-                    return;
+                var view = View;
+                if (view != null)
+                {
+                    var userConfirmedDiscardingChanges = await view.ConfirmDestructiveAction(ActionType.DiscardEditingChanges);
+                    if (!userConfirmedDiscardingChanges)
+                        return;
+                }
             }
 
             analyticsService.EditViewClosed.Track(closeReason(EditViewCloseReason.Close));

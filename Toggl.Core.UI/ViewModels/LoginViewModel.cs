@@ -193,7 +193,7 @@ namespace Toggl.Core.UI.ViewModels
 
             isLoadingSubject.OnNext(true);
 
-            loginDisposable = View
+            loginDisposable = View?
                 .GetGoogleToken()
                 .SelectMany(userAccessManager.LoginWithGoogle)
                 .Track(analyticsService.Login, AuthenticationMethod.Google)

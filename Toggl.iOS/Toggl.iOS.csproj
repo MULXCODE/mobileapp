@@ -82,7 +82,7 @@
     </MtouchVerbosity>
     <MtouchFloat32>true</MtouchFloat32>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
   </PropertyGroup>
@@ -2014,6 +2014,7 @@
     <Compile Include="Cells\Settings\SettingsButtonCell.designer.cs">
       <DependentUpon>SettingsButtonCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Handoff.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Toggl.Core.UI\Toggl.Core.UI.csproj">

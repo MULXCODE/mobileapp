@@ -5,7 +5,6 @@
         tools:background="@color/defaultBackground"
         android:orientation="vertical"
         android:padding="10dp"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <TextView

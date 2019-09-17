@@ -95,6 +95,7 @@ namespace Toggl.Core.UI.ViewModels.Reports
 
         public IObservable<string> CurrentDateRange { get; }
 
+        public IObservable<long> WorkspaceId { get; }
         public IObservable<string> WorkspaceNameObservable { get; }
         public ICollection<SelectOption<IThreadSafeWorkspace>> Workspaces { get; private set; }
         public IObservable<ICollection<SelectOption<IThreadSafeWorkspace>>> WorkspacesObservable { get; }
@@ -139,6 +140,11 @@ namespace Toggl.Core.UI.ViewModels.Reports
             EndDate = endDateSubject.AsObservable().AsDriver(schedulerProvider);
 
             SelectWorkspace = rxActionFactory.FromAsync(selectWorkspace);
+
+            WorkspaceId = workspaceSubject
+                .Select(workspace => workspace.Id)
+                .DistinctUntilChanged()
+                .AsDriver(schedulerProvider);
 
             WorkspaceNameObservable = workspaceSubject
                 .Select(workspace => workspace?.Name ?? string.Empty)
@@ -221,6 +227,21 @@ namespace Toggl.Core.UI.ViewModels.Reports
                 .Select(currentUser => currentUser.BeginningOfWeek)
                 .Subscribe(onBeginningOfWeekChanged)
                 .DisposedBy(disposeBag);
+            
+            interactorFactory.ObserveDefaultWorkspaceId()
+                .Execute()
+                .Where(newWorkspaceId => newWorkspaceId != workspaceId)
+                .SelectMany(id => interactorFactory.GetWorkspaceById(id).Execute())
+                .Where(ws => !ws.IsInaccessible)
+                .Subscribe(updateWorkspace)
+                .DisposedBy(disposeBag);
+        }
+
+        private void updateWorkspace(IThreadSafeWorkspace newWorkspace)
+        {
+            if (viewAppearedForTheFirstTime()) return;
+            
+            loadReport(newWorkspace, startDate, endDate, source);
         }
 
         public override void ViewAppeared()

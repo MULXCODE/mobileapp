@@ -50,7 +50,7 @@ The project has the following columns:
     - Translation Improvement:
     If there are any imprecise/incorrect texts that need to be improved in a specific language, create a new [Translation Improvement issue](https://github.com/toggl/mobileapp/issues/new?template=h-translation-fix-request.md).
     - New Copy Translation:
-    When introducing new pieces of text in the app, all of them need to be translated to currently supported languages before they can be released. Create a [New Copy Translation issue](https://github.com/toggl/mobileapp/issues/new?template=i-new-copy-translation-request.md) to start the translation process for new copi.
+    When introducing new pieces of text in the app, all of them need to be translated to currently supported languages before they can be released. Create a [New Copy Translation issue](https://github.com/toggl/mobileapp/issues/new?template=i-new-copy-translation-request.md) to start the translation process for new copy.
 - In Progress
 Translation request issues in this column either have been assigned to translators or are currently being worked on in some other way.
 - In Review

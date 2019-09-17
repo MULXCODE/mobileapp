@@ -4,7 +4,9 @@ using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using NUnit.Framework.Internal;
 using Toggl.Core.Analytics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Models;
@@ -18,6 +20,7 @@ using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Xunit;
+using Notification = System.Reactive.Notification;
 using Task = System.Threading.Tasks.Task;
 
 namespace Toggl.Core.Tests.UI.ViewModels
@@ -34,7 +37,9 @@ namespace Toggl.Core.Tests.UI.ViewModels
             public ReportsViewModelTest()
             {
                 var workspaceObservable = Observable.Return(new MockWorkspace { Id = WorkspaceId });
+                var workspaceIdObservable = Observable.Return(WorkspaceId);
                 InteractorFactory.GetDefaultWorkspace().Execute().Returns(workspaceObservable);
+                InteractorFactory.ObserveDefaultWorkspaceId().Execute().Returns(workspaceIdObservable);
             }
 
             protected override ReportsViewModel CreateViewModel()
@@ -550,8 +555,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     .ForEach(percentage => percentage.Should().BeGreaterOrEqualTo(5));
             }
         }
-
-
+        
         public sealed class TheSelectWorkspaceCommand : ReportsViewModelTest
         {
             [Fact, LogIfTooSlow]
@@ -801,6 +805,54 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 InteractorFactory
                     .DidNotReceive()
                     .GetProjectSummary(Arg.Any<long>(), Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>());
+            }
+        }
+
+        public sealed class TheReports : ReportsViewModelTest
+        {
+            [Fact, LogIfTooSlow]
+            public async Task AreNotReloadedAfterTheViewAppearedWhenTheDefaultWorkspaceHasNotChanged()
+            {
+                TimeService.CurrentDateTime.Returns(DateTimeOffset.Now);
+                await ViewModel.Initialize();
+                ViewModel.ViewAppeared();
+                
+                TestScheduler.Start();
+
+                InteractorFactory.Received(1).GetProjectSummary(
+                    Arg.Any<long>(),
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
+            }
+
+            [Fact, LogIfTooSlow]
+            public async Task AreReloadedWhenANewWorkspaceIdIsObserved()
+            {
+                var initialWorkspaceId = 10L;
+                var newlySelectedWorkspaceId = 11L;
+                var observable = TestScheduler.CreateColdObservable(
+                    OnNext(0, initialWorkspaceId),
+                    OnNext(1, newlySelectedWorkspaceId)
+                );
+                var workspace10 = Observable.Return(new MockWorkspace(initialWorkspaceId));
+                var workspace11 = Observable.Return(new MockWorkspace(newlySelectedWorkspaceId));
+                InteractorFactory.GetWorkspaceById(initialWorkspaceId).Execute().Returns(workspace10);
+                InteractorFactory.GetWorkspaceById(newlySelectedWorkspaceId).Execute().Returns(workspace11);
+                InteractorFactory.ObserveDefaultWorkspaceId().Execute().Returns(observable);
+                TimeService.CurrentDateTime.Returns(DateTimeOffset.Now);
+                await ViewModel.Initialize();
+                ViewModel.ViewAppeared();
+                TestScheduler.AdvanceTo(100);
+                TestScheduler.Start();
+                
+                InteractorFactory.Received(1).GetProjectSummary(
+                    initialWorkspaceId,
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
+                InteractorFactory.Received(1).GetProjectSummary(
+                    newlySelectedWorkspaceId,
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
             }
         }
     }

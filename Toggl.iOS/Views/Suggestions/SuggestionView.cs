@@ -46,6 +46,9 @@ namespace Toggl.iOS
             Hidden = false;
 
             DescriptionLabel.Text = Suggestion.Description;
+            DescriptionLabel.Hidden = Suggestion.Description == string.Empty;
+            NoDescriptionLabel.Hidden = Suggestion.Description != string.Empty;
+
             prefixWithProviderNameInDebug();
 
             var hasProject = Suggestion.ProjectId != null;
@@ -74,6 +77,7 @@ namespace Toggl.iOS
             IsAccessibilityElement = true;
             AccessibilityHint = Resources.SuggestionAccessibilityHint;
             AccessibilityTraits = UIAccessibilityTrait.Button;
+            NoDescriptionLabel.Text = Resources.NoDescription;
 
             ProjectDot.Image = ProjectDot
                 .Image

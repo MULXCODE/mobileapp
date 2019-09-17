@@ -24,28 +24,29 @@
             <EditText
                 android:id="@+id/ProjectNameTextView"
                 android:lines="1"
-                android:gravity="left"
                 android:textSize="15sp"
                 android:singleLine="true"
                 android:lineSpacingExtra="5sp"
                 android:textColor="@android:color/black"
+                android:background="@null"
                 tools:text="Some client with a ridiculously big name to help us test fading totally"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="56dp"
+                android:layout_marginRight="40dp"
                 android:paddingTop="0dp"
                 android:paddingBottom="0dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="56dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="40dp" />
+                android:layout_marginBottom="13dp"/>
             <TextView
                 android:id="@+id/ErrorText"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:lineSpacingExtra="4sp"
                 android:textColor="@color/errorText"
                 tools:text="Sorry, such project already exists"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ProjectNameTextView"
+                android:layout_alignParentBottom="true"
                 android:layout_alignStart="@+id/ProjectNameTextView" />
             <View
                 android:background="@drawable/TransparentToWhiteGradient"

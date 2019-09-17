@@ -73,9 +73,13 @@ namespace Toggl.Core.UI.ViewModels
             var feedbackText = await FeedbackText.FirstAsync();
             if (!string.IsNullOrEmpty(feedbackText))
             {
-                var shouldDiscard = await View.ConfirmDestructiveAction(ActionType.DiscardFeedback);
-                if (!shouldDiscard)
-                    return;
+                var view = View;
+                if (view != null)
+                {
+                    var shouldDiscard = await View.ConfirmDestructiveAction(ActionType.DiscardFeedback);
+                    if (!shouldDiscard)
+                        return;
+                }
             }
 
             base.CloseWithDefaultResult();

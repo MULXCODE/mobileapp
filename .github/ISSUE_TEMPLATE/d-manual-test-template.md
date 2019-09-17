@@ -6,57 +6,39 @@ about: A manual testing checklist that can be assigned to a release to track the
 
 # 🐧 Manual Test Template
 
-## Automated with UI tests
+## Testing sign in area ##
 
-The following tests have corresponding UI tests, so they can be considered as passing if all the UI tests are passing. These are already checked off to save you a few seconds, but you still need to run and check the UI tests.
-
-### Testing sign in area
-- [x] Test standard email and password sign in
-- [x] Test standard email and password sign in with invalid email address
-- [x] Test signup with standard email and password
-- [x] Test forgotten password link
-- [x] Test forgotten password link with invalid email
-
-### Testing timer page
-- [x] Start timer
-- [x] Stop timer
-- [x] Enter description
-- [x] Add new project
-- [x] Add new client
-- [x] Add new tag
-- [x] Add existing project
-- [x] Add existing tag
-- [x] Start new timer, select no project, stop
-- [x] Create new manual time entry
-- [x] Start a new entry, add multiple tags.
-- [x] Start a new entry, discard new entry.
-
-### Testing editing time entry
-- [x] Change description
-- [x] Change project
-- [x] Remove project
-- [x] Create new project from edit view
-
-## Manual tests
-
-These tests still need to be done the old fashion way.
-
-### Testing sign in area
+- [ ] Test standard email and password sign in
+- [ ] Test standard email and password sign in with invalid email address
 - [ ] Test standard email and password sign in with invalid password
+- [ ] Test signup with standard email and password
 - [ ] Test terms and conditions link
 - [ ] Test privacy policy link
 - [ ] Test signin with Google signin
 - [ ] Test signup with Google signin
-- [ ] Verify that forgot password button sends an e-mail to the provided e-mail address
+- [ ] Test forgotten password link
+- [ ] Test forgotten password link with invalid email
 - [ ] Is country selection automatically selecting the right country?
-- [ ] Test email field with mixed character sets (including various languages)
-- [ ] Test password field for old/changed password
 - [ ] Is country selection allowing manual selection
 - [ ] Test email field with invalid email
+- [ ] Test email field with mixed character sets (including various languages)
+- [ ] Test password field for old/changed password
 
-### Testing timer page
+## Testing timer page
+- [ ] Start timer
+- [ ] Stop timer
+- [ ] Enter description
+- [ ] Add new project
+- [ ] Add new client
+- [ ] Add new tag
 - [ ] Add long (3000 characters) description and confirm character limit error shows in the edit view after sync
 - [ ] Add new project using existing client
+- [ ] Add existing project
+- [ ] Add existing tag
+- [ ] Start new timer, select no project, stop
+- [ ] Create new manual time entry
+- [ ] Start a new entry, add multiple tags.
+- [ ] Start a new entry, discard new entry.
 - [ ] Continue an entry
 - [ ] Delete an entry
 
@@ -69,7 +51,10 @@ These tests still need to be done the old fashion way.
 - [ ] Start a timer and enter a description and create a tag (Is it appearing from the right direction)?
 - [ ] Start a timer and enter a description and create a project and a tag (Is it appearing from the right direction)?
 
-### Testing editing time entry
+## Testing editing time entry
+- [ ] Change description
+- [ ] Change project
+- [ ] Remove project
 - [ ] Change tags
 - [ ] Remove tags
 - [ ] Change start time with the barrel/manual selection
@@ -82,10 +67,11 @@ These tests still need to be done the old fashion way.
 - [ ] Discard changes to entry
 - [ ] Delete entry from edit view
 - [ ] Confirm changes
+- [ ] Create new project from edit view
 - [ ] Create new client from edit view
 - [ ] Create new tag from edit view
 
-### Grouped Time Entries
+## Grouped Time Entries
 - [ ] Make sure the `Group time entries` setting is propagated to the server
 - [ ] Check whether the main log respects the grouping setting
 - [ ] Check whether the group count is correct in both expanded and collapsed groups
@@ -101,7 +87,7 @@ These tests still need to be done the old fashion way.
 - [ ] Delete a TE group from an Edit View
 - [ ] Check whether the group summary time on both main log and in Edit view is the same and correct
 
-### Testing report screen
+## Testing report screen
 - [ ] Custom range
 - [ ] Is correct data displayed
 - [ ] Are categories displaying correct timerframe and dates?
@@ -120,7 +106,7 @@ These tests still need to be done the old fashion way.
 - [ ] Ensure correct year is selected on all options
 - [ ] Change workspaces
 
-### Testing settings page
+## Testing settings page
 - [ ] Sign out normal email
 - [ ] Sign out google sign in
 - [ ] Change workspace
@@ -147,7 +133,7 @@ These tests still need to be done the old fashion way.
 - [ ] About
 - [ ] Help
 
-### Testing Calendar Integration
+## Testing Calendar Integration
 - [ ] Are calendar entries showing correctly?
 - [ ] Create an entry from a calendar entry
 - [ ] Edit the entry by adjusting the start time of the entry (is this reflected on the calendar page?)
@@ -156,12 +142,12 @@ These tests still need to be done the old fashion way.
 - [ ] Delete the calendar entry from your calendar (is this reflected?)
 - [ ] Move the calendar entry from your calendar to another day (is this reflected?)
 
-### Testing Siri Integration
+## Testing Siri Integration
 - [ ] Enable Siri Integration
 - [ ] Start a time entry
 - [ ] Stop a time entry
 
-### Multiple Workspaces
+## Multiple Workspaces
 - [ ] Switch workspaces
 - [ ] Go offline then switch workspaces (Airplane mode)
 - [ ] Switch between workspaces while timer running
@@ -186,7 +172,7 @@ These tests still need to be done the old fashion way.
 - [ ] Delete project on web whilst mobile offline
 - [ ] Make changes to projects on web
 
-### Testing in different timezones
+## Testing in different timezones
 
 - [ ] Set timezone to US and start and stop an entry (does it show up correctly?)
 - [ ] Does it show up correctly on web?
@@ -199,7 +185,7 @@ These tests still need to be done the old fashion way.
 - [ ] Set timezone to UK and start and stop an entry (does it show up correctly?)
 - [ ] Does it show up correctly on web?
 
-### Testing onboarding bubbles
+## Testing onboarding
 
 - [ ] Check that steps are being displayed correctly for first entry
 - [ ] Check that steps to edit first entry are being displayed correctly
@@ -211,6 +197,13 @@ These tests still need to be done the old fashion way.
 - [ ] Test adding start custom entry shortcuts or/and custom report shortcut
 - [ ] Test importing and using Siri Workflows from Settings into the Shortcuts app
 - [ ] Test Siri with all those shortcuts and workflows ☝️
+
+### Testing Handoff
+- [ ] Test Handoff to web from the timer page
+- [ ] Test Handoff to web from the settings page
+- [ ] Test Handoff to web from the reports page (check that it shows the same workspace and the same period)
+- [ ] Try changing the workspace in the mobile app. Is this handed off to web properly?
+- [ ] Try changing the selected period in the mobile app. Is this handed off to web properly?
 
 ### Testing app restriction UI
 
@@ -230,3 +223,7 @@ These tests still need to be done the old fashion way.
 
 - [ ] All of the UI tests are passing
 - [ ] Check this after testing the app if no UI errors/glitches have occurred
+
+## Test that the UI is appearing as intended and report any issues
+
+- [ ] Check this after testing app if no UI errors/glitches have occurred

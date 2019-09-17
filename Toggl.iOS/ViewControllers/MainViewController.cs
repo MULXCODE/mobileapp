@@ -20,6 +20,7 @@ using Toggl.Core.UI.ViewModels.TimeEntriesLog.Identity;
 using Toggl.iOS.ExtensionKit;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
+using Toggl.iOS.Helper;
 using Toggl.iOS.Presentation;
 using Toggl.iOS.Suggestions;
 using Toggl.iOS.Views;
@@ -30,6 +31,7 @@ using Toggl.Storage.Extensions;
 using Toggl.Storage.Onboarding;
 using Toggl.Storage.Settings;
 using UIKit;
+using static Toggl.Core.Analytics.EditTimeEntryOrigin;
 using static Toggl.Core.UI.Helper.Animation;
 
 namespace Toggl.iOS.ViewControllers
@@ -183,7 +185,7 @@ namespace Toggl.iOS.ViewControllers
             CurrentTimeEntryCard.Rx().Tap()
                 .WithLatestFrom(ViewModel.CurrentRunningTimeEntry, (_, te) => te)
                 .Where(te => te != null)
-                .Select(te => (new[] { te.Id }, EditTimeEntryOrigin.RunningTimeEntryCard))
+                .Select(te => new EditTimeEntryInfo(EditTimeEntryOrigin.RunningTimeEntryCard, te.Id))
                 .Subscribe(ViewModel.SelectTimeEntry.Inputs)
                 .DisposedBy(DisposeBag);
 
@@ -296,6 +298,17 @@ namespace Toggl.iOS.ViewControllers
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, onApplicationDidBecomeActive);
         }
 
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+
+            var activity = new NSUserActivity(Handoff.Action.Log);
+            activity.EligibleForHandoff = true;
+            activity.WebPageUrl = Handoff.Url.Log;
+            UserActivity = activity;
+            activity.BecomeCurrent();
+        }
+
         public override void ViewDidDisappear(bool animated)
         {
             base.ViewDidDisappear(animated);
@@ -355,15 +368,15 @@ namespace Toggl.iOS.ViewControllers
             suggestionsView.ConstrainInView(suggestionsContaier);
         }
 
-        private (long[], EditTimeEntryOrigin) editEventInfo(LogItemViewModel item)
+        private EditTimeEntryInfo editEventInfo(LogItemViewModel item)
         {
             var origin = item.IsTimeEntryGroupHeader
-                ? EditTimeEntryOrigin.GroupHeader
+                ? GroupHeader
                 : item.BelongsToGroup
-                    ? EditTimeEntryOrigin.GroupTimeEntry
-                    : EditTimeEntryOrigin.SingleTimeEntry;
+                    ? GroupTimeEntry
+                    : SingleTimeEntry;
 
-            return (item.RepresentedTimeEntriesIds, origin);
+            return new EditTimeEntryInfo(origin, item.RepresentedTimeEntriesIds);
         }
 
         private ContinueTimeEntryInfo timeEntryContinuation(LogItemViewModel itemViewModel, bool isSwipe)
@@ -586,7 +599,7 @@ namespace Toggl.iOS.ViewControllers
                 if (currentlyRunningTimeEntry == null)
                     return;
 
-                var selectTimeEntryData = (new[] { currentlyRunningTimeEntry.Id }, EditTimeEntryOrigin.RunningTimeEntryCard);
+                var selectTimeEntryData = new EditTimeEntryInfo(RunningTimeEntryCard, currentlyRunningTimeEntry.Id);
                 await ViewModel.SelectTimeEntry.ExecuteWithCompletion(selectTimeEntryData);
             });
             swipeUpRunningCardGesture.Direction = UISwipeGestureRecognizerDirection.Up;

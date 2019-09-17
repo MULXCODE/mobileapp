@@ -11,6 +11,7 @@ namespace Toggl.Droid.ViewHelpers
     public class MainRecyclerViewTouchCallback : ItemTouchHelper.SimpleCallback
     {
         private MainRecyclerAdapter adapter;
+        public bool AreSwipeActionsEnabled { get; set; }
 
         public MainRecyclerViewTouchCallback(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
         {
@@ -20,6 +21,7 @@ namespace Toggl.Droid.ViewHelpers
         {
             this.adapter = adapter;
         }
+        public override bool IsItemViewSwipeEnabled => AreSwipeActionsEnabled;
 
         public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
             => false;

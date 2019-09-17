@@ -8,6 +8,7 @@ namespace Toggl.Droid.Fragments
     public sealed partial class SettingsFragment
     {
         private View aboutView;
+        private View swipeActionsView;
         private View manualModeView;
         private View is24hoursModeView;
         private View runningTimerNotificationsView;
@@ -46,12 +47,14 @@ namespace Toggl.Droid.Fragments
         private TextView notificationsStoppedTimerLabel;
         private TextView generalLabel;
         private TextView aboutLabel;
+        private TextView settingsToggleSwipeActionsLabel;
         private TextView settingsToggleManualModeLabel;
         private TextView settingsToggleManualModeExplanation;
         private TextView feedbackView;
         private TextView logoutView;
-        
+
         private Switch is24hoursModeSwitch;
+        private Switch swipeActionsSwitch;
         private Switch manualModeSwitch;
         private Switch runningTimerNotificationsSwitch;
         private Switch stoppedTimerNotificationsSwitch;
@@ -63,6 +66,7 @@ namespace Toggl.Droid.Fragments
         protected override void InitializeViews(View fragmentView)
         {
             aboutView = fragmentView.FindViewById(Resource.Id.SettingsAboutContainer);
+            swipeActionsView = fragmentView.FindViewById(Resource.Id.SettingsToggleSwipeActionsView);
             manualModeView = fragmentView.FindViewById(Resource.Id.SettingsToggleManualModeView);
             is24hoursModeView = fragmentView.FindViewById(Resource.Id.SettingsIs24HourModeView);
             dateFormatView = fragmentView.FindViewById(Resource.Id.SettingsDateFormatView);
@@ -103,9 +107,11 @@ namespace Toggl.Droid.Fragments
             notificationsStoppedTimerLabel = fragmentView.FindViewById<TextView>(Resource.Id.NotificationsStoppedTimerLabel);
             generalLabel = fragmentView.FindViewById<TextView>(Resource.Id.GeneralLabel);
             aboutLabel = fragmentView.FindViewById<TextView>(Resource.Id.AboutLabel);
+            settingsToggleSwipeActionsLabel = fragmentView.FindViewById<TextView>(Resource.Id.SettingsToggleSwipeActionsLabel);
             settingsToggleManualModeLabel = fragmentView.FindViewById<TextView>(Resource.Id.SettingsToggleManualModeLabel);
             settingsToggleManualModeExplanation = fragmentView.FindViewById<TextView>(Resource.Id.SettingsToggleManualModeExplanation);
 
+            swipeActionsSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsAreSwipeActionsEnabledSwitch);
             manualModeSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsIsManualModeEnabledSwitch);
             is24hoursModeSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsIs24HourModeSwitch);
             runningTimerNotificationsSwitch = fragmentView.FindViewById<Switch>(Resource.Id.SettingsAreRunningTimerNotificationsEnabledSwitch);
@@ -115,7 +121,7 @@ namespace Toggl.Droid.Fragments
             appBarLayout = fragmentView.FindViewById<AppBarLayout>(Resource.Id.AppBarLayout);
 
             scrollView = fragmentView.FindViewById<NestedScrollView>(Resource.Id.ScrollView);
-            
+
             logoutView.Text = Shared.Resources.SignOutOfToggl;
             helpView.Text = Shared.Resources.Help;
             feedbackView.Text = Shared.Resources.SubmitFeedback;
@@ -136,6 +142,7 @@ namespace Toggl.Droid.Fragments
             notificationsStoppedTimerLabel.Text = Shared.Resources.NotificationsStoppedTimer;
             generalLabel.Text = Shared.Resources.General;
             aboutLabel.Text = Shared.Resources.About;
+            settingsToggleSwipeActionsLabel.Text = Shared.Resources.SwipeActions;
             settingsToggleManualModeLabel.Text = Shared.Resources.ManualMode;
             settingsToggleManualModeExplanation.Text = Shared.Resources.ManualModeDescription;
         }
