@@ -24,10 +24,13 @@ namespace Toggl.Core.UI.ViewModels
         private readonly IRxActionFactory rxActionFactory;
 
         private readonly TimeSpan delayAfterPassordReset = TimeSpan.FromSeconds(4);
+        private readonly ISubject<Unit> passwordResetWithInvalidEmailSubject = new Subject<Unit>();
 
         public BehaviorSubject<Email> Email { get; } = new BehaviorSubject<Email>(Shared.Email.Empty);
+        public IObservable<bool> EmailValid { get; }
         public IObservable<string> ErrorMessage { get; }
         public IObservable<bool> PasswordResetSuccessful { get; }
+        public IObservable<Unit> PasswordResetWithInvalidEmail { get; }
 
         public UIAction Reset { get; }
 
@@ -49,7 +52,8 @@ namespace Toggl.Core.UI.ViewModels
             this.analyticsService = analyticsService;
             this.rxActionFactory = rxActionFactory;
 
-            Reset = rxActionFactory.FromObservable(reset, Email.Select(email => email.IsValid));
+            Reset = rxActionFactory.FromObservable(reset);
+            PasswordResetWithInvalidEmail = passwordResetWithInvalidEmailSubject.AsObservable();
 
             var resetActionStartedObservable = Reset
                 .Executing
@@ -65,6 +69,10 @@ namespace Toggl.Core.UI.ViewModels
             PasswordResetSuccessful = Reset.Elements
                 .Select(_ => true)
                 .StartWith(false);
+
+            EmailValid = Email
+                .Select(email => email.IsValid)
+                .DistinctUntilChanged();
         }
 
         public override Task Initialize(EmailParameter parameter)
@@ -76,6 +84,12 @@ namespace Toggl.Core.UI.ViewModels
 
         private IObservable<Unit> reset()
         {
+            if (!Email.Value.IsValid)
+            {
+                passwordResetWithInvalidEmailSubject.OnNext(Unit.Default);
+                return Observable.Empty<Unit>();
+            }
+
             return userAccessManager.ResetPassword(Email.Value)
                 .Track(analyticsService.ResetPassword)
                 .SelectUnit()
@@ -86,7 +100,7 @@ namespace Toggl.Core.UI.ViewModels
         {
             timeService.RunAfterDelay(delayAfterPassordReset, CloseWithDefaultResult);
         }
-        
+
         public override void CloseWithDefaultResult()
         {
             Close(EmailParameter.With(Email.Value));
