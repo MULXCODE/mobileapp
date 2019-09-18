@@ -4,6 +4,8 @@ using FsCheck.Xunit;
 using Microsoft.Reactive.Testing;
 using NSubstitute;
 using System;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.Tests.Generators;
@@ -13,6 +15,7 @@ using Toggl.Core.UI.ViewModels;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Network;
 using Toggl.Shared;
+using Toggl.Shared.Extensions;
 using Xunit;
 
 namespace Toggl.Core.Tests.UI.ViewModels
@@ -119,26 +122,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 ViewModel.Reset.Execute();
 
                 AnalyticsService.Received().ResetPassword.Track();
-            }
-
-            [Fact, LogIfTooSlow]
-            public void CannotExecuteWhenEmailIsNotValid()
-            {
-                ViewModel.Email.OnNext(InvalidEmail);
-
-                var observer = TestScheduler.CreateObserver<bool>();
-                ViewModel.Reset.Enabled.Subscribe(observer);
-
-                observer.LastEmittedValue().Should().BeFalse();
-            }
-
-            [Fact, LogIfTooSlow]
-            public void CannotExecuteWhenEmailIsEmpty()
-            {
-                var observer = TestScheduler.CreateObserver<bool>();
-                ViewModel.Reset.Enabled.Subscribe(observer);
-
-                observer.LastEmittedValue().Should().BeFalse();
             }
 
             [Fact, LogIfTooSlow]
@@ -249,6 +232,15 @@ namespace Toggl.Core.Tests.UI.ViewModels
 
                     var result = await viewModel.Result;
                     result.Email.Should().BeEquivalentTo(ValidEmail);
+                }
+
+                [Fact, LogIfTooSlow]
+                public void DoesNotResetThePasswordIfEmailIsInvalid()
+                {
+                    ViewModel.Reset.Execute();
+                    TestScheduler.Start();
+
+                    UserAccessManager.DidNotReceive().ResetPassword(Arg.Any<Email>());
                 }
             }
 
@@ -362,6 +354,100 @@ namespace Toggl.Core.Tests.UI.ViewModels
 
                 var result = viewModel.Result.GetAwaiter().GetResult();
                 result.Email.Should().BeEquivalentTo(email);
+            }
+        }
+
+        public sealed class TheEmailValidProperty : ForgotPasswordViewModelTest
+        {
+            [Fact, LogIfTooSlow]
+            public void StartsWithFalse()
+            {
+                var observer = TestScheduler.CreateObserver<bool>();
+                ViewModel.EmailValid.Subscribe(observer);
+
+                TestScheduler.Start();
+
+                observer.Messages.Should().HaveCount(1);
+                observer.Messages.First().Value.Value.Should().BeFalse();
+            }
+
+            [Fact, LogIfTooSlow]
+            public void EmitsTrueOnceTheEmailBecomesValid()
+            {
+                var validEmail = Email.From("valid.email@company.org");
+                var observer = TestScheduler.CreateObserver<bool>();
+                ViewModel.EmailValid.Subscribe(observer);
+
+                TestScheduler.Start();
+                ViewModel.Email.OnNext(validEmail);
+
+                observer.Values().AssertEqual(false, true);
+            }
+
+            [Theory, LogIfTooSlow]
+            [InlineData("")]
+            [InlineData("invalid")]
+            [InlineData("Not an email")]
+            [InlineData("almost an@email.com")]
+            public void EmitsFalseOnceTheEmailBecomesInvalid(string invalidEmailString)
+            {
+                var validEmail = Email.From("valid.email@company.org");
+                var invalidEmail = Email.From(invalidEmailString);
+                var observer = TestScheduler.CreateObserver<bool>();
+                ViewModel.EmailValid.Subscribe(observer);
+
+                TestScheduler.Start();
+                ViewModel.Email.OnNext(validEmail);
+                ViewModel.Email.OnNext(invalidEmail);
+
+                observer.Values().AssertEqual(false, true, false);
+            }
+
+            [Fact, LogIfTooSlow]
+            public void DoesNotEmitFalseMultipleTimesInARow()
+            {
+                var invalidEmails = new[] { "", "invalid", "wrong email", "almost@.com" }
+                    .Select(Email.From);
+                var observer = TestScheduler.CreateObserver<bool>();
+                ViewModel.EmailValid.Subscribe(observer);
+
+                TestScheduler.Start();
+                invalidEmails.ForEach(ViewModel.Email.OnNext);
+
+                observer.Values().AssertEqual(false);
+            }
+
+            [Fact, LogIfTooSlow]
+            public void DoesNotEmitTrueMultipleTimesInARow()
+            {
+                var validEmails = new[] { "email@company.com", "test.account.42@company.org", "susan.boyle@xfactor.org" }
+                    .Select(Email.From);
+                var observer = TestScheduler.CreateObserver<bool>();
+                ViewModel.EmailValid.Subscribe(observer);
+
+                TestScheduler.Start();
+                validEmails.ForEach(ViewModel.Email.OnNext);
+
+                observer.Values().AssertEqual(false, true);
+            }
+        }
+
+        public sealed class ThePasswordResetWithInvalidEmailProperty : ForgotPasswordViewModelTest
+        {
+            [Fact, LogIfTooSlow]
+            public void EmitsUnitEverytimeWhenResetIsExecutedWithAnInvalidEmail()
+            {
+                var observer = TestScheduler.CreateObserver<Unit>();
+                ViewModel.PasswordResetWithInvalidEmail.Subscribe(observer);
+
+                ViewModel.Reset.Execute();
+                TestScheduler.Start();
+                ViewModel.Reset.Execute();
+                TestScheduler.Start();
+                ViewModel.Reset.Execute();
+                TestScheduler.Start();
+
+                observer.Values().Should().HaveCount(3);
             }
         }
     }
