@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.Tests.Generators;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Core.UI.Helper;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels;
@@ -18,8 +19,10 @@ namespace Toggl.Core.Tests.UI.ViewModels
     {
         public abstract class SelectColorViewModelTest : BaseViewModelTests<SelectColorViewModel, ColorParameters, Color>
         {
+            protected long EnoughTicksToEmitTheThrottledColor { get; } = TimeSpan.FromSeconds(1).Ticks;
+
             protected override SelectColorViewModel CreateViewModel()
-                => new SelectColorViewModel(NavigationService, RxActionFactory);
+                => new SelectColorViewModel(NavigationService, RxActionFactory, SchedulerProvider);
         }
 
         public sealed class TheConstructor : SelectColorViewModelTest
@@ -28,13 +31,15 @@ namespace Toggl.Core.Tests.UI.ViewModels
             [ConstructorData]
             public void ThrowsIfAnyOfTheArgumentsIsNull(
                 bool useNavigationService,
-                bool useRxActionFactory)
+                bool useRxActionFactory,
+                bool useSchedulerProvider)
             {
-                var navigationService = useNavigationService ? NavigationService : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
+                var navigationService = useNavigationService ? NavigationService : null;
+                var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
 
                 Action tryingToConstructWithEmptyParameters =
-                    () => new SelectColorViewModel(navigationService, rxActionFactory);
+                    () => new SelectColorViewModel(navigationService, rxActionFactory, schedulerProvider);
 
                 tryingToConstructWithEmptyParameters
                     .Should().Throw<ArgumentNullException>();
@@ -49,18 +54,17 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var initiallySelectedColor = Colors.DefaultProjectColors.First();
                 var colorToSelect = Colors.DefaultProjectColors.Last();
                 var parameters = ColorParameters.Create(initiallySelectedColor, true);
-
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
-
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
                 ViewModel.SelectColor.Execute(colorToSelect);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
-                    .Single(c => c.Selected).Color.Should().BeEquivalentTo(colorToSelect);
+                observer.LastEmittedValue()
+                    .Single(c => c.Selected)
+                    .Color.Should().BeEquivalentTo(colorToSelect);
             }
 
             [Fact, LogIfTooSlow]
@@ -71,11 +75,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var parameters = ColorParameters.Create(initiallySelectedColor, false);
 
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 await ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.SelectColor.Execute(colorToSelect);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
                 (await ViewModel.Result).Should().Be(colorToSelect);
             }
@@ -88,19 +93,18 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var parameters = ColorParameters.Create(initiallySelectedColor, true);
 
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
-
+                ViewModel.SelectableColors.Subscribe(observer);
                 ViewModel.SelectColor.Execute(colorToSelect);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
                 View.DidNotReceive().Close();
             }
         }
 
-        public sealed class ThePrepareCommand : SelectColorViewModelTest
+        public sealed class TheInitializeMethod : SelectColorViewModelTest
         {
-
             [Fact, LogIfTooSlow]
             public void AddsFourteenItemsToTheListOfSelectableColorsIfTheUserIsNotPro()
             {
@@ -108,13 +112,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var parameters = ColorParameters.Create(someColor, false);
 
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
+                observer.LastEmittedValue()
                     .Should().HaveCount(14);
             }
 
@@ -125,13 +128,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var parameters = ColorParameters.Create(someColor, true);
 
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
+                observer.LastEmittedValue()
                     .Should().HaveCount(15);
             }
 
@@ -140,16 +142,15 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 var passedColor = Colors.DefaultProjectColors.Skip(3).First();
                 var parameters = ColorParameters.Create(passedColor, false);
-
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
-                    .Single(c => c.Selected).Color.Should().Be(passedColor);
+                observer.LastEmittedValue()
+                    .Single(c => c.Selected)
+                    .Color.Should().Be(passedColor);
             }
 
             [Fact, LogIfTooSlow]
@@ -158,16 +159,15 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var someColor = new Color(23, 45, 125);
                 var expected = Colors.DefaultProjectColors.First();
                 var parameters = ColorParameters.Create(someColor, false);
-
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.Start();
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
-                    .Single(c => c.Selected).Color.Should().Be(expected);
+                observer.LastEmittedValue()
+                    .Single(c => c.Selected)
+                    .Color.Should().Be(expected);
             }
 
             [Fact, LogIfTooSlow]
@@ -176,14 +176,14 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var someColor = new Color(23, 45, 125);
                 var parameters = ColorParameters.Create(someColor, true);
                 var observer = TestScheduler.CreateObserver<IEnumerable<SelectableColorViewModel>>();
-                ViewModel.SelectableColors.Subscribe(observer);
 
                 ViewModel.Initialize(parameters);
+                ViewModel.SelectableColors.Subscribe(observer);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                observer.Messages
-                    .Select(m => m.Value.Value)
-                    .Last()
-                    .Single(c => c.Selected).Color.Should().Be(someColor);
+                observer.LastEmittedValue()
+                    .Single(c => c.Selected)
+                    .Color.Should().Be(someColor);
             }
         }
 
@@ -229,11 +229,14 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var someColor = new Color(23, 45, 125);
                 var parameters = ColorParameters.Create(someColor, true);
                 await ViewModel.Initialize(parameters);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
                 var expected = Colors.DefaultProjectColors.First();
                 ViewModel.SelectColor.Execute(expected);
+                TestScheduler.AdvanceBy(EnoughTicksToEmitTheThrottledColor);
 
-                ViewModel.Save.Execute();
+                var toAwait = ViewModel.Save.ExecuteWithCompletion();
                 TestScheduler.Start();
+                await toAwait;
 
                 (await ViewModel.Result).Should().Be(expected);
             }

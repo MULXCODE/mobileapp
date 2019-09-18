@@ -18,57 +18,46 @@ namespace Toggl.Core.UI.ViewModels
     [Preserve(AllMembers = true)]
     public class SelectColorViewModel : ViewModel<ColorParameters, Color>
     {
-        private readonly IRxActionFactory rxActionFactory;
-
         private Color defaultColor;
-        private IObservable<Color> customColor;
-        private BehaviorSubject<Color> selectedColor = new BehaviorSubject<Color>(Colors.Transparent);
+        private readonly ISchedulerProvider schedulerProvider;
 
         private BehaviorSubject<float> hue { get; } = new BehaviorSubject<float>(0.0f);
-        private BehaviorSubject<float> saturation { get; } = new BehaviorSubject<float>(0.0f);
         private BehaviorSubject<float> value { get; } = new BehaviorSubject<float>(0.375f);
+        private BehaviorSubject<float> saturation { get; } = new BehaviorSubject<float>(0.0f);
 
         public bool AllowCustomColors { get; private set; }
 
-        public IObservable<IImmutableList<SelectableColorViewModel>> SelectableColors { get; }
         public IObservable<float> Hue { get; }
-        public IObservable<float> Saturation { get; }
         public IObservable<float> Value { get; }
+        public IObservable<float> Saturation { get; }
+        public IObservable<IImmutableList<SelectableColorViewModel>> SelectableColors { get; private set; }
 
         public UIAction Save { get; }
         public InputAction<float> SetHue { get; }
         public InputAction<float> SetSaturation { get; }
         public InputAction<float> SetValue { get; }
-        public InputAction<Color> SelectColor { get; }
+        public RxAction<Color, Color> SelectColor { get; }
 
-        public SelectColorViewModel(INavigationService navigationService, IRxActionFactory rxActionFactory)
+        public SelectColorViewModel(
+            INavigationService navigationService,
+            IRxActionFactory rxActionFactory,
+            ISchedulerProvider schedulerProvider)
             : base(navigationService)
         {
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
+            Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
 
-            this.rxActionFactory = rxActionFactory;
+            this.schedulerProvider = schedulerProvider;
 
-            // Public properties
-            Hue = hue.AsObservable();
-            Saturation = saturation.AsObservable();
-            Value = value.AsObservable();
+            Hue = hue.AsDriver(schedulerProvider);
+            Saturation = saturation.AsDriver(schedulerProvider);
+            Value = value.AsDriver(schedulerProvider);
 
-            Save = rxActionFactory.FromAction(save);
+            Save = rxActionFactory.FromAsync(save);
             SetHue = rxActionFactory.FromAction<float>(hue.OnNext);
             SetSaturation = rxActionFactory.FromAction<float>(saturation.OnNext);
             SetValue = rxActionFactory.FromAction<float>(value.OnNext);
-            SelectColor = rxActionFactory.FromAction<Color>(selectColor);
-
-            customColor = Observable
-                .CombineLatest(hue, saturation, value, Colors.FromHSV)
-                .Throttle(TimeSpan.FromMilliseconds(100))
-                .Do(selectedColor.OnNext);
-
-            var availableColors = Observable.Return(Colors.DefaultProjectColors)
-                .CombineLatest(customColor, combineAllColors);
-
-            SelectableColors = availableColors
-                .CombineLatest(selectedColor, updateSelectableColors);
+            SelectColor = rxActionFactory.FromFunction<Color, Color>(selectColor);
         }
 
         public override Task Initialize(ColorParameters parameter)
@@ -76,58 +65,84 @@ namespace Toggl.Core.UI.ViewModels
             defaultColor = parameter.Color;
             AllowCustomColors = parameter.AllowCustomColors;
 
-            var noColorsSelected = Colors.DefaultProjectColors.None(color => color == defaultColor);
+            var selectableColorObservable = Observable.Defer(() =>
+            {
+                if (!AllowCustomColors)
+                    return Observable.Return(Colors.DefaultProjectColors);
 
-            if (noColorsSelected)
+                return Observable
+                    .CombineLatest(hue, saturation, value, Colors.FromHSV)
+                    .Throttle(TimeSpan.FromMilliseconds(100), schedulerProvider.DefaultScheduler)
+                    .Do(SelectColor.Inputs)
+                    .Select(availableColors);
+            });
+
+            var selectedColorObservable = Observable.Defer(() =>
             {
-                if (AllowCustomColors)
+                var defaultColorSelected = Colors.DefaultProjectColors
+                    .Any(color => color == defaultColor);
+                if (defaultColorSelected)
                 {
-                    var colorComponents = defaultColor.GetHSV();
-                    hue.OnNext(colorComponents.hue);
-                    saturation.OnNext(colorComponents.saturation);
-                    value.OnNext(colorComponents.value);
+                    if (!AllowCustomColors)
+                        return Observable.Return(defaultColor);
+
+                    SelectColor.Execute(defaultColor);
+                    return SelectColor.Elements;
                 }
-                else
+
+                if (!AllowCustomColors)
                 {
-                    selectedColor.OnNext(Colors.DefaultProjectColors.First());
+                    var defaultSelectedColor = Colors.DefaultProjectColors.First();
+                    return Observable.Return(defaultSelectedColor);
                 }
-            }
-            else
-            {
-                selectedColor.OnNext(defaultColor);
-            }
+
+                var colorComponents = defaultColor.GetHSV();
+                hue.OnNext(colorComponents.hue);
+                value.OnNext(colorComponents.value);
+                saturation.OnNext(colorComponents.saturation);
+                return SelectColor.Elements;
+            });
+
+            SelectableColors = selectableColorObservable
+                .CombineLatest(selectedColorObservable, updateSelectableColors)
+                .AsDriver(schedulerProvider);
 
             return base.Initialize(parameter);
+
+            IEnumerable<Color> availableColors(Color customColor)
+            {
+                foreach (var color in Colors.DefaultProjectColors)
+                {
+                    yield return color;
+                }
+
+                yield return customColor;
+            }
+
+            IImmutableList<SelectableColorViewModel> updateSelectableColors(IEnumerable<Color> colors, Color selectedColor)
+                => colors
+                    .Select(color => new SelectableColorViewModel(color, color == selectedColor))
+                    .ToImmutableList();
         }
+
         public override void CloseWithDefaultResult()
         {
             Close(defaultColor);
         }
 
-        private IEnumerable<Color> combineAllColors(Color[] defaultColors, Color custom)
+        private Color selectColor(Color color)
         {
-            if (AllowCustomColors)
-            {
-                return defaultColors.Concat(new[] { custom });
-            }
-
-            return defaultColors;
-        }
-
-        private void selectColor(Color color)
-        {
-            selectedColor.OnNext(color);
-
             if (!AllowCustomColors)
-                save();
+                Close(color);
+
+            return color;
         }
 
-        private IImmutableList<SelectableColorViewModel> updateSelectableColors(IEnumerable<Color> availableColors, Color selectedColor)
-            => availableColors.Select(color => new SelectableColorViewModel(color, color == selectedColor)).ToImmutableList();
-
-        private void save()
+        private async Task save()
         {
-            Close(selectedColor.Value);
+            var colors = await SelectableColors.FirstAsync();
+            var selectedColor = colors.First(c => c.Selected).Color;
+            Close(selectedColor);
         }
     }
 }

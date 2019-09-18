@@ -191,7 +191,8 @@ namespace Toggl.Core.UI.Navigation
             {
                 return new SelectColorViewModel(
                     dependencyContainer.NavigationService,
-                    dependencyContainer.RxActionFactory);
+                    dependencyContainer.RxActionFactory,
+                    dependencyContainer.SchedulerProvider);
             }
 
             if (viewModelType == typeof(SelectCountryViewModel))
