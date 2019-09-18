@@ -2,7 +2,7 @@
 
 namespace Toggl.Shared
 {
-    public struct License : IEquatable<License>
+    public class License : IEquatable<License>
     {
         public string LibraryName { get; set; }
 

@@ -34,8 +34,7 @@ namespace Toggl.Droid.Fragments
             var adapter = new SimpleAdapter<SelectableWorkspaceViewModel>(
                 Resource.Layout.SelectDefaultWorkspaceFragmentCell,
                 SelectDefaultWorkspaceViewHolder.Create
-            );
-            adapter.Items = ViewModel.Workspaces ?? ImmutableList<SelectableWorkspaceViewModel>.Empty;
+            ) {Items = ViewModel.Workspaces ?? ImmutableList<SelectableWorkspaceViewModel>.Empty};
             adapter.ItemTapObservable
                 .Subscribe(ViewModel.SelectWorkspace.Inputs)
                 .DisposedBy(DisposeBag);

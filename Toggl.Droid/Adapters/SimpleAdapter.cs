@@ -8,7 +8,7 @@ using Toggl.Shared;
 namespace Toggl.Droid.Adapters
 {
     public sealed class SimpleAdapter<T> : BaseRecyclerAdapter<T>
-        where T : IEquatable<T>
+        where T : class, IEquatable<T>
     {
         private readonly int layoutId;
         private readonly Func<View, BaseRecyclerViewHolder<T>> createViewHolder;
