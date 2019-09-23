@@ -22,7 +22,7 @@ namespace Toggl.Droid.Adapters
 
         public override int GetItemViewType(int position)
         {
-            var item = GetItem(position);
+            var item = GetTypedItem(position);
             switch (item)
             {
                 case SelectableClientViewModel _:

@@ -4,6 +4,8 @@ using Android.Support.V7.Widget;
 using Android.Support.V7.RecyclerView.Extensions;
 using Android.Views;
 using System;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Toggl.Core.UI.Interfaces;
@@ -20,6 +22,11 @@ namespace Toggl.Droid.Adapters
         public IObservable<T> ItemTapObservable => itemTapSubject.AsObservable();
 
         private Subject<T> itemTapSubject = new Subject<T>();
+
+        public virtual IImmutableList<T> Items
+        {
+            set => SubmitList(value.ToList());
+        }
 
         protected BaseRecyclerAdapter(IDiffingStrategy<T> diffingStrategy = null)
             : base(itemCallbackgFrom(diffingStrategy))
@@ -46,7 +53,12 @@ namespace Toggl.Droid.Adapters
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
-            ((BaseRecyclerViewHolder<T>)holder).Item = GetItem(position) as T;
+            ((BaseRecyclerViewHolder<T>)holder).Item = GetTypedItem(position);
+        }
+
+        public T GetTypedItem(int position)
+        {
+            return GetItem(position) as T;
         }
 
         private static DiffingStrategyItemCallback<T> itemCallbackgFrom(IDiffingStrategy<T> diffingStrategy)
