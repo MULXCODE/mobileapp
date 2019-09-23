@@ -10,6 +10,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Toggl.Core.UI.Interfaces;
 using Toggl.Droid.Adapters.DiffingStrategies;
+using Toggl.Droid.Extensions;
 using Toggl.Droid.ViewHolders;
 using Toggl.Shared.Extensions;
 using JavaObject = Java.Lang.Object;
@@ -21,15 +22,15 @@ namespace Toggl.Droid.Adapters
     {
         public IObservable<T> ItemTapObservable => itemTapSubject.AsObservable();
 
-        private Subject<T> itemTapSubject = new Subject<T>();
+        private readonly Subject<T> itemTapSubject = new Subject<T>();
 
-        public virtual IImmutableList<T> Items
+        public IImmutableList<T> Items
         {
             set => SubmitList(value.ToList());
         }
 
         protected BaseRecyclerAdapter(IDiffingStrategy<T> diffingStrategy = null)
-            : base(itemCallbackgFrom(diffingStrategy))
+            : base(itemCallbackFrom(diffingStrategy))
         {
         }
 
@@ -56,12 +57,12 @@ namespace Toggl.Droid.Adapters
             ((BaseRecyclerViewHolder<T>)holder).Item = GetTypedItem(position);
         }
 
-        public T GetTypedItem(int position)
+        protected T GetTypedItem(int position)
         {
-            return GetItem(position) as T;
+            return GetItem(position).Cast<T>();
         }
 
-        private static DiffingStrategyItemCallback<T> itemCallbackgFrom(IDiffingStrategy<T> diffingStrategy)
+        private static DiffingStrategyItemCallback<T> itemCallbackFrom(IDiffingStrategy<T> diffingStrategy)
         {
             if (diffingStrategy == null)
             {
@@ -90,9 +91,9 @@ namespace Toggl.Droid.Adapters
         }
 
         public override bool AreContentsTheSame(JavaObject oldItem, JavaObject newItem)
-            => diffingStrategy.AreContentsTheSame(oldItem as T, newItem as T);
+            => diffingStrategy.AreContentsTheSame(oldItem.Cast<T>(), newItem.Cast<T>());
 
         public override bool AreItemsTheSame(JavaObject oldItem, JavaObject newItem)
-            => diffingStrategy.AreItemsTheSame(oldItem as T, newItem as T);
+            => diffingStrategy.AreItemsTheSame(oldItem.Cast<T>(), newItem.Cast<T>());
     }
 }
