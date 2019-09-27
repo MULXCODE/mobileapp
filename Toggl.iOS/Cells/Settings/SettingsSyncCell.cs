@@ -7,6 +7,8 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using UIKit;
 using Colors = Toggl.Core.UI.Helper.Colors;
+using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
+
 
 namespace Toggl.iOS.Cells.Settings
 {

@@ -46,8 +46,11 @@
   <color name="runningEntryTimer">#FF328FFF</color>
 
   <!--Project page-->
-  <color name="clientName">#FF5E5B5B</color>  
-  
+  <color name="clientName">#FF5E5B5B</color>
+
+  <!-- Settings page-->
+  <color name="syncStateSyncedText">#4CD964</color>
+
   <!--Placeholder time entry -->
   <color name="halfTransparentPurple">#8FC56BFF</color>
   <color name="halfTransparentBlue">#8F06AAF5</color>

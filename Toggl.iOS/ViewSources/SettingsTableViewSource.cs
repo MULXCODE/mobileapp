@@ -6,18 +6,12 @@ using Toggl.iOS.Cells.Settings;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.ViewControllers.Settings.Models;
 using UIKit;
+using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
 
 namespace Toggl.iOS.ViewSources
 {
     using SettingsSection = SectionModel<string, ISettingRow>;
-
-    public enum SyncStatus
-    {
-        Synced,
-        Syncing,
-        LoggingOut
-    }
-
+    
     public class SettingsTableViewSource: BaseTableViewSource<SettingsSection, string, ISettingRow>
     {
         private readonly float headerHeight = 48;

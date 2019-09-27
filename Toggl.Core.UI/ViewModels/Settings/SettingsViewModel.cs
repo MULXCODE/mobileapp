@@ -54,6 +54,13 @@ namespace Toggl.Core.UI.ViewModels
         public string Title { get; private set; } = Resources.Settings;
         public bool CalendarSettingsEnabled => onboardingStorage.CompletedCalendarOnboarding();
         public string Version => $"{platformInfo.Version} ({platformInfo.BuildNumber})";
+        
+        public enum SyncStatus
+        {
+            Synced,
+            Syncing,
+            LoggingOut
+        }
 
         public IObservable<string> Name { get; }
         public IObservable<string> Email { get; }
@@ -61,6 +68,7 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<Unit> LoggingOut { get; }
         public IObservable<string> DateFormat { get; }
         public IObservable<bool> IsRunningSync { get; }
+        public IObservable<SyncStatus> CurrentSyncStatus { get; }
         public IObservable<string> WorkspaceName { get; }
         public IObservable<string> DurationFormat { get; }
         public IObservable<string> BeginningOfWeek { get; }
@@ -207,6 +215,16 @@ namespace Toggl.Core.UI.ViewModels
 
             LoggingOut = loggingOutSubject.AsObservable()
                 .AsDriver(schedulerProvider);
+            
+            CurrentSyncStatus = Observable.CombineLatest(
+                IsSynced,
+                IsRunningSync,
+                LoggingOut.SelectValue(true).StartWith(false),
+                (synced, syncing, loggingOut) =>
+                {
+                    if (loggingOut) return SyncStatus.LoggingOut;
+                    return syncing ? SyncStatus.Syncing : SyncStatus.Synced;
+                });
 
             dataSource.User.Current
                 .Subscribe(user => currentUser = user)

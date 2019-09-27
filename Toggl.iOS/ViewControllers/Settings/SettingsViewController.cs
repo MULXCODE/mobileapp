@@ -17,6 +17,7 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using UIKit;
+using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
 
 namespace Toggl.iOS.ViewControllers
 {
@@ -151,17 +152,7 @@ namespace Toggl.iOS.ViewControllers
 
             sections.Add(generalSection);
 
-            var syncStatusObservable = Observable.CombineLatest(
-                ViewModel.IsSynced,
-                ViewModel.IsRunningSync,
-                ViewModel.LoggingOut.SelectValue(true).StartWith(false),
-                (synced, syncing, loggingOut) =>
-                {
-                    if (loggingOut) return SyncStatus.LoggingOut;
-                    return syncing ? SyncStatus.Syncing : SyncStatus.Synced;
-                });
-
-            var footerSection = syncStatusObservable.Select(syncStatus
+            var footerSection = ViewModel.CurrentSyncStatus.Select(syncStatus
                 => new SettingSection("", new ISettingRow[]
                 {
                     new CustomRow<SyncStatus>(syncStatus),

@@ -2,6 +2,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using System;
+using System.Reactive.Linq;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.Extensions;
@@ -10,8 +11,11 @@ using Toggl.Droid.Helper;
 using Toggl.Droid.Presentation;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
+using Xamarin.Essentials;
 using static Android.Support.V7.App.AppCompatDelegate;
 using static Toggl.Shared.Resources;
+using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
+
 
 namespace Toggl.Droid.Fragments
 {
@@ -54,8 +58,8 @@ namespace Toggl.Droid.Fragments
                 .DisposedBy(DisposeBag);
 
             ViewModel.IsGroupingTimeEntries
-               .Subscribe(groupTimeEntriesSwitch.Rx().CheckedObserver())
-               .DisposedBy(DisposeBag);
+                .Subscribe(groupTimeEntriesSwitch.Rx().CheckedObserver())
+                .DisposedBy(DisposeBag);
 
             ViewModel.UseTwentyFourHourFormat
                 .Subscribe(is24hoursModeSwitch.Rx().CheckedObserver())
@@ -164,6 +168,20 @@ namespace Toggl.Droid.Fragments
             smartRemindersView.Rx().Tap()
                 .Subscribe(ViewModel.OpenCalendarSmartReminders.Inputs)
                 .DisposedBy(DisposeBag);
+
+            ViewModel.CurrentSyncStatus
+                .Subscribe(setSyncStatusView)
+                .DisposedBy(DisposeBag);
+        }
+
+        private void setSyncStatusView(SyncStatus status)
+        {
+            syncStateViews.Values.ForEach(view => view.Visibility = ViewStates.Gone);
+
+            txtStateInProgress.Text = status == SyncStatus.Syncing ? Syncing : LoggingOutSecurely;
+
+            syncStateViews.TryGetValue(status, out var visibleView);
+            visibleView.Visibility = ViewStates.Visible;
         }
 
         public void ScrollToTop()
