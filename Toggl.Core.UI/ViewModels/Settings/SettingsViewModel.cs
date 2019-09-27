@@ -56,7 +56,6 @@ namespace Toggl.Core.UI.ViewModels
         public bool CalendarSettingsEnabled => onboardingStorage.CompletedCalendarOnboarding();
         public string Version => $"{platformInfo.Version} ({platformInfo.BuildNumber})";
         
-
         public IObservable<string> Name { get; }
         public IObservable<string> Email { get; }
         public IObservable<bool> IsSynced { get; }

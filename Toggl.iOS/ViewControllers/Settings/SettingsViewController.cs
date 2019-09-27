@@ -19,7 +19,6 @@ using Toggl.Shared.Extensions;
 using UIKit;
 using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
-
 namespace Toggl.iOS.ViewControllers
 {
     using SettingSection = SectionModel<string, ISettingRow>;

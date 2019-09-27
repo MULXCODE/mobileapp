@@ -16,7 +16,6 @@ using static Android.Support.V7.App.AppCompatDelegate;
 using static Toggl.Shared.Resources;
 using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
-
 namespace Toggl.Droid.Fragments
 {
     public sealed partial class SettingsFragment : ReactiveTabFragment<SettingsViewModel>, IScrollableToTop

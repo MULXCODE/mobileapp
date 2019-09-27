@@ -9,7 +9,6 @@ using UIKit;
 using Colors = Toggl.Core.UI.Helper.Colors;
 using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
-
 namespace Toggl.iOS.Cells.Settings
 {
     public partial class SettingsSyncCell : BaseTableViewCell<CustomRow<PresentableSyncStatus>>
