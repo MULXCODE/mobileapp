@@ -25,6 +25,7 @@ using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
 using Xamarin.Essentials;
+using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 using static Toggl.Shared.Extensions.CommonFunctions;
 
 namespace Toggl.Core.UI.ViewModels
@@ -55,12 +56,6 @@ namespace Toggl.Core.UI.ViewModels
         public bool CalendarSettingsEnabled => onboardingStorage.CompletedCalendarOnboarding();
         public string Version => $"{platformInfo.Version} ({platformInfo.BuildNumber})";
         
-        public enum SyncStatus
-        {
-            Synced,
-            Syncing,
-            LoggingOut
-        }
 
         public IObservable<string> Name { get; }
         public IObservable<string> Email { get; }
@@ -68,7 +63,7 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<Unit> LoggingOut { get; }
         public IObservable<string> DateFormat { get; }
         public IObservable<bool> IsRunningSync { get; }
-        public IObservable<SyncStatus> CurrentSyncStatus { get; }
+        public IObservable<PresentableSyncStatus> CurrentSyncStatus { get; }
         public IObservable<string> WorkspaceName { get; }
         public IObservable<string> DurationFormat { get; }
         public IObservable<string> BeginningOfWeek { get; }
@@ -222,8 +217,8 @@ namespace Toggl.Core.UI.ViewModels
                 LoggingOut.SelectValue(true).StartWith(false),
                 (synced, syncing, loggingOut) =>
                 {
-                    if (loggingOut) return SyncStatus.LoggingOut;
-                    return syncing ? SyncStatus.Syncing : SyncStatus.Synced;
+                    if (loggingOut) return PresentableSyncStatus.LoggingOut;
+                    return syncing ? PresentableSyncStatus.Syncing : PresentableSyncStatus.Synced;
                 });
 
             dataSource.User.Current

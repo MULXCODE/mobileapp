@@ -3,8 +3,7 @@ using Android.Support.Design.Widget;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
-using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
-
+using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.Droid.Fragments
 {
@@ -69,7 +68,7 @@ namespace Toggl.Droid.Fragments
 
         private View syncStateSyncedHolder;
         private View syncStateInProgressHolder;
-        private Dictionary<SyncStatus, View> syncStateViews = new Dictionary<SyncStatus, View>();
+        private Dictionary<PresentableSyncStatus, View> syncStateViews = new Dictionary<PresentableSyncStatus, View>();
         private TextView txtStateSynced;
         private TextView txtStateInProgress;
 
@@ -135,9 +134,9 @@ namespace Toggl.Droid.Fragments
             
             syncStateSyncedHolder = fragmentView.FindViewById<View>(Resource.Id.SyncStateSyncedHolder);
             syncStateInProgressHolder = fragmentView.FindViewById<View>(Resource.Id.SyncStateInProgressHolder);
-            syncStateViews.Add(SyncStatus.Synced, syncStateSyncedHolder);
-            syncStateViews.Add(SyncStatus.Syncing, syncStateInProgressHolder);
-            syncStateViews.Add(SyncStatus.LoggingOut, syncStateInProgressHolder);
+            syncStateViews.Add(PresentableSyncStatus.Synced, syncStateSyncedHolder);
+            syncStateViews.Add(PresentableSyncStatus.Syncing, syncStateInProgressHolder);
+            syncStateViews.Add(PresentableSyncStatus.LoggingOut, syncStateInProgressHolder);
             txtStateSynced = fragmentView.FindViewById<TextView>(Resource.Id.TxtStateSynced);
             txtStateInProgress = fragmentView.FindViewById<TextView>(Resource.Id.TxtStateInProgress);
             

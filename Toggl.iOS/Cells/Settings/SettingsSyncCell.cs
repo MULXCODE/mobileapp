@@ -7,12 +7,12 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using UIKit;
 using Colors = Toggl.Core.UI.Helper.Colors;
-using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
+using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 
 namespace Toggl.iOS.Cells.Settings
 {
-    public partial class SettingsSyncCell : BaseTableViewCell<CustomRow<SyncStatus>>
+    public partial class SettingsSyncCell : BaseTableViewCell<CustomRow<PresentableSyncStatus>>
     {
         public static readonly string Identifier = nameof(SettingsSyncCell);
         public static readonly UINib Nib;
@@ -48,19 +48,19 @@ namespace Toggl.iOS.Cells.Settings
         {
             switch (Item.CustomValue)
             {
-                case SyncStatus.Synced:
+                case PresentableSyncStatus.Synced:
                     StatusLabel.Text = Resources.SyncCompleted;
                     SyncedIcon.Hidden = false;
                     LoadingIcon.Hidden = true;
                     LoadingIcon.StopSpinning();
                     break;
-                case SyncStatus.Syncing:
+                case PresentableSyncStatus.Syncing:
                     StatusLabel.Text = Resources.Syncing;
                     SyncedIcon.Hidden = true;
                     LoadingIcon.Hidden = false;
                     LoadingIcon.StartSpinning();
                     break;
-                case SyncStatus.LoggingOut:
+                case PresentableSyncStatus.LoggingOut:
                     StatusLabel.Text = Resources.LoggingOutSecurely;
                     SyncedIcon.Hidden = true;
                     LoadingIcon.Hidden = false;

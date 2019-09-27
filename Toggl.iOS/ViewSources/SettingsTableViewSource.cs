@@ -6,7 +6,7 @@ using Toggl.iOS.Cells.Settings;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.ViewControllers.Settings.Models;
 using UIKit;
-using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
+using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.iOS.ViewSources
 {
@@ -41,7 +41,7 @@ namespace Toggl.iOS.ViewSources
                     return cell;
                 }
 
-                case CustomRow<SyncStatus> customRow:
+                case CustomRow<PresentableSyncStatus> customRow:
                 {
                     var cell = (SettingsSyncCell) tableView.DequeueReusableCell(
                         SettingsSyncCell.Identifier,

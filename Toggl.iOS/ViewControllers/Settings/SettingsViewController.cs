@@ -17,7 +17,8 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using UIKit;
-using SyncStatus = Toggl.Core.UI.ViewModels.SettingsViewModel.SyncStatus;
+using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
+
 
 namespace Toggl.iOS.ViewControllers
 {
@@ -155,7 +156,7 @@ namespace Toggl.iOS.ViewControllers
             var footerSection = ViewModel.CurrentSyncStatus.Select(syncStatus
                 => new SettingSection("", new ISettingRow[]
                 {
-                    new CustomRow<SyncStatus>(syncStatus),
+                    new CustomRow<PresentableSyncStatus>(syncStatus),
                     new ButtonRow(Resources.SettingsDialogButtonSignOut, ViewModel.TryLogout)
                 }));
 
