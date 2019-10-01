@@ -388,6 +388,7 @@
     <Compile Include="Presentation\AndroidPresenter.cs" />
     <Compile Include="Presentation\DialogFragmentPresenter.cs" />
     <Compile Include="Presentation\ViewModelCache.cs" />
+    <Compile Include="Services\WidgetsAnalyticsService.cs" />
     <Compile Include="Startup\AndroidDependencyContainer.cs" />
     <Compile Include="Extensions\FloatingActionButtonExtensions.cs" />
     <Compile Include="Presentation\IScrollableToTop.cs" />
@@ -656,7 +657,6 @@
     <Compile Include="BroadcastReceivers\BootCompletedBroadcastReceiver.cs" />
     <Compile Include="Services\ScheduleEventNotificationsService.cs" />
     <Compile Include="Views\VerticallyCenteredImageSpan.cs" />
-    <Compile Include="Widgets\Services\WidgetsAnalyticsService.cs" />
     <Compile Include="Widgets\TimeEntryWidget.cs" />
     <Compile Include="Services\AccessibilityServiceAndroid.cs" />
     <Compile Include="Services\TimerBackgroundService.cs" />
