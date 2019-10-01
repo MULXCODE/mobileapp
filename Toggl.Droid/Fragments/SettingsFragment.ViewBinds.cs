@@ -89,7 +89,7 @@ namespace Toggl.Droid.Fragments
             defaultWorkspaceView = fragmentView.FindViewById(Resource.Id.DefaultWorkspaceView);
       
             txtLogout = fragmentView.FindViewById<TextView>(Resource.Id.TxtSettingsLogout);
-            logoutView = fragmentView.FindViewById<View>(Resource.Id.SettingsLogoutButton);
+            logoutView = fragmentView.FindViewById(Resource.Id.SettingsLogoutButton);
             helpView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsHelpButton);
             feedbackView = fragmentView.FindViewById<TextView>(Resource.Id.SettingsSubmitFeedbackButton);
             calendarSettingsView = fragmentView.FindViewById<TextView>(Resource.Id.CalendarSettingsView);
@@ -132,8 +132,8 @@ namespace Toggl.Droid.Fragments
 
             scrollView = fragmentView.FindViewById<NestedScrollView>(Resource.Id.ScrollView);
             
-            syncStateSyncedHolder = fragmentView.FindViewById<View>(Resource.Id.SyncStateSyncedHolder);
-            syncStateInProgressHolder = fragmentView.FindViewById<View>(Resource.Id.SyncStateInProgressHolder);
+            syncStateSyncedHolder = fragmentView.FindViewById(Resource.Id.SyncStateSyncedHolder);
+            syncStateInProgressHolder = fragmentView.FindViewById(Resource.Id.SyncStateInProgressHolder);
             syncStateViews.Add(PresentableSyncStatus.Synced, syncStateSyncedHolder);
             syncStateViews.Add(PresentableSyncStatus.Syncing, syncStateInProgressHolder);
             syncStateViews.Add(PresentableSyncStatus.LoggingOut, syncStateInProgressHolder);

@@ -179,7 +179,7 @@ namespace Toggl.Droid.Fragments
 
             txtStateInProgress.Text = status == PresentableSyncStatus.Syncing ? Syncing : LoggingOutSecurely;
 
-            syncStateViews.TryGetValue(status, out var visibleView);
+            var visibleView = syncStateViews[status];
             visibleView.Visibility = ViewStates.Visible;
         }
 

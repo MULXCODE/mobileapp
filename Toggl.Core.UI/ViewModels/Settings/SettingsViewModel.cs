@@ -208,16 +208,22 @@ namespace Toggl.Core.UI.ViewModels
 
             LoggingOut = loggingOutSubject.AsObservable()
                 .AsDriver(schedulerProvider);
-            
+
+            PresentableSyncStatus combineStatuses(bool synced, bool syncing, bool loggingOut)
+            {
+                if (loggingOut)
+                {
+                    return PresentableSyncStatus.LoggingOut;
+                }
+                
+                return syncing ? PresentableSyncStatus.Syncing : PresentableSyncStatus.Synced;
+            }
+
             CurrentSyncStatus = Observable.CombineLatest(
                 IsSynced,
                 IsRunningSync,
                 LoggingOut.SelectValue(true).StartWith(false),
-                (synced, syncing, loggingOut) =>
-                {
-                    if (loggingOut) return PresentableSyncStatus.LoggingOut;
-                    return syncing ? PresentableSyncStatus.Syncing : PresentableSyncStatus.Synced;
-                });
+                combineStatuses);
 
             dataSource.User.Current
                 .Subscribe(user => currentUser = user)
