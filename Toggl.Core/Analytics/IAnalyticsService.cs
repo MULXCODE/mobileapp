@@ -193,6 +193,8 @@ namespace Toggl.Core.Analytics
 
         IAnalyticsEvent<bool> TimerWidgetInstallStateChange { get; }
 
+        IAnalyticsEvent<int> TimerWidgetSizeChanged { get; }
+
         void SetAppCenterUserId(long id);
         void ResetAppCenterUserId();
 

@@ -198,6 +198,8 @@ namespace Toggl.Core.Analytics
 
         public IAnalyticsEvent<bool> TimerWidgetInstallStateChange { get; protected set; }
 
+        public IAnalyticsEvent<int> TimerWidgetSizeChanged { get; protected set; }
+
         protected BaseAnalyticsService()
         {
             Login = new AnalyticsEvent<AuthenticationMethod>(this, nameof(Login), "AuthenticationMethod");
@@ -289,6 +291,7 @@ namespace Toggl.Core.Analytics
             AccessibilityEnabled = new AnalyticsEvent<bool>(this, nameof(AccessibilityEnabled), "Enabled");
             WatchPaired = new AnalyticsEvent<bool>(this, nameof(WatchPaired), "Installed");
             TimerWidgetInstallStateChange = new AnalyticsEvent<bool>(this, nameof(TimerWidgetInstallStateChange), "Installed");
+            TimerWidgetSizeChanged = new AnalyticsEvent<int>(this, nameof(TimerWidgetSizeChanged), "Columns");
             PushInitiatedSyncFetch = new AnalyticsEvent<string>(this, nameof(PushInitiatedSyncFetch), "NumberOfEntitiesFetched");
             PushNotificationSyncStarted = new AnalyticsEvent<string>(this, nameof(PushNotificationSyncStarted), "Source");
             PushNotificationSyncFinished = new AnalyticsEvent<string>(this, nameof(PushNotificationSyncFinished), "Source");

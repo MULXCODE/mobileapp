@@ -2,6 +2,7 @@ using Android.App;
 using Android.Appwidget;
 using Android.Content;
 using Android.OS;
+using Android.Provider;
 using Android.Widget;
 using Toggl.Droid.Services;
 using Toggl.Droid.Widgets.Services;
@@ -50,12 +51,18 @@ namespace Toggl.Droid.Widgets
             base.OnAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
             var minWidth = newOptions.GetInt(AppWidgetManager.OptionAppwidgetMinWidth);
             appWidgetManager.UpdateAppWidget(appWidgetId, getRemoteViews(context, minWidth));
+
+            var intent = new Intent(context, typeof(WidgetsAnalyticsService));
+            intent.SetAction(WidgetsAnalyticsService.TrackTimerWidgetResizeAction);
+            intent.PutExtra(WidgetsAnalyticsService.TimerWidgetSizeParameter, getColumns(minWidth));
+            WidgetsAnalyticsService.EnqueueTrackTimerWidgetResize(context, intent);
         }
 
         private void reportInstallationState(Context context, bool installed)
         {
             var intent = new Intent(context, typeof(WidgetsAnalyticsService));
-            intent.PutExtra(WidgetsAnalyticsService.StateParameterName, installed);
+            intent.SetAction(WidgetsAnalyticsService.TrackTimerWidgetInstallAction);
+            intent.PutExtra(WidgetsAnalyticsService.TimerWidgetInstallStateParameter, installed);
             WidgetsAnalyticsService.EnqueueTrackTimerWidgetInstallState(context, intent);
         }
 
@@ -84,5 +91,8 @@ namespace Toggl.Droid.Widgets
             intent.SetAction(TimerBackgroundService.StopRunningTimeEntryAction);
             return PendingIntent.GetBroadcast(context, 0, intent, PendingIntentFlags.UpdateCurrent);
         }
+
+        private int getColumns(int width)
+            => (width + 30) / 70; // Magic numbers come from https://developer.android.com/guide/practices/ui_guidelines/widget_design.html#anatomy_determining_size
     }
 }
