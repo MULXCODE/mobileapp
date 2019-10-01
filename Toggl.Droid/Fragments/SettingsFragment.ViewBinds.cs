@@ -4,6 +4,7 @@ using Android.Support.Design.Widget;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
+using static Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.Droid.Fragments
 {
@@ -134,9 +135,9 @@ namespace Toggl.Droid.Fragments
             
             syncStateSyncedHolder = fragmentView.FindViewById(Resource.Id.SyncStateSyncedHolder);
             syncStateInProgressHolder = fragmentView.FindViewById(Resource.Id.SyncStateInProgressHolder);
-            syncStateViews.Add(PresentableSyncStatus.Synced, syncStateSyncedHolder);
-            syncStateViews.Add(PresentableSyncStatus.Syncing, syncStateInProgressHolder);
-            syncStateViews.Add(PresentableSyncStatus.LoggingOut, syncStateInProgressHolder);
+            syncStateViews.Add(Synced, syncStateSyncedHolder);
+            syncStateViews.Add(Syncing, syncStateInProgressHolder);
+            syncStateViews.Add(LoggingOut, syncStateInProgressHolder);
             txtStateSynced = fragmentView.FindViewById<TextView>(Resource.Id.TxtStateSynced);
             txtStateInProgress = fragmentView.FindViewById<TextView>(Resource.Id.TxtStateInProgress);
             

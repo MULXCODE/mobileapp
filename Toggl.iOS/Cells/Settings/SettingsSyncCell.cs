@@ -8,6 +8,7 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using UIKit;
 using Colors = Toggl.Core.UI.Helper.Colors;
+using static Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.iOS.Cells.Settings
 {
@@ -47,19 +48,19 @@ namespace Toggl.iOS.Cells.Settings
         {
             switch (Item.CustomValue)
             {
-                case PresentableSyncStatus.Synced:
+                case Synced:
                     StatusLabel.Text = Resources.SyncCompleted;
                     SyncedIcon.Hidden = false;
                     LoadingIcon.Hidden = true;
                     LoadingIcon.StopSpinning();
                     break;
-                case PresentableSyncStatus.Syncing:
+                case Syncing:
                     StatusLabel.Text = Resources.Syncing;
                     SyncedIcon.Hidden = true;
                     LoadingIcon.Hidden = false;
                     LoadingIcon.StartSpinning();
                     break;
-                case PresentableSyncStatus.LoggingOut:
+                case LoggingOut:
                     StatusLabel.Text = Resources.LoggingOutSecurely;
                     SyncedIcon.Hidden = true;
                     LoadingIcon.Hidden = false;
