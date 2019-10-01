@@ -656,7 +656,7 @@
     <Compile Include="BroadcastReceivers\BootCompletedBroadcastReceiver.cs" />
     <Compile Include="Services\ScheduleEventNotificationsService.cs" />
     <Compile Include="Views\VerticallyCenteredImageSpan.cs" />
-    <Compile Include="Widgets\Services\InstallationStateReportService.cs" />
+    <Compile Include="Widgets\Services\WidgetsAnalyticsService.cs" />
     <Compile Include="Widgets\TimeEntryWidget.cs" />
     <Compile Include="Services\AccessibilityServiceAndroid.cs" />
     <Compile Include="Services\TimerBackgroundService.cs" />
@@ -1135,7 +1135,7 @@
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
-  <ItemGroup>  
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_toggl_logo.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
@@ -1189,7 +1189,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\TimeEntryWidgetProvider.xml">
-    <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>

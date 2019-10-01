@@ -54,9 +54,9 @@ namespace Toggl.Droid.Widgets
 
         private void reportInstallationState(Context context, bool installed)
         {
-            var intent = new Intent(context, typeof(InstallationStateReportService));
-            intent.PutExtra(InstallationStateReportService.StateParameterName, installed);
-            InstallationStateReportService.EnqueueWork(context, intent);
+            var intent = new Intent(context, typeof(WidgetsAnalyticsService));
+            intent.PutExtra(WidgetsAnalyticsService.StateParameterName, installed);
+            WidgetsAnalyticsService.EnqueueTrackTimerWidgetInstallState(context, intent);
         }
 
         private RemoteViews getRemoteViews(Context context, int minWidth)
