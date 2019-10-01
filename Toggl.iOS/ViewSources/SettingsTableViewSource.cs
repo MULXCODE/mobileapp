@@ -1,12 +1,12 @@
 using System;
 using Foundation;
+using Toggl.Core.Sync;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Helper;
 using Toggl.iOS.Cells.Settings;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.ViewControllers.Settings.Models;
 using UIKit;
-using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.iOS.ViewSources
 {

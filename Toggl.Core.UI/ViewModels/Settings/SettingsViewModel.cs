@@ -25,7 +25,6 @@ using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
 using Xamarin.Essentials;
-using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 using static Toggl.Shared.Extensions.CommonFunctions;
 
 namespace Toggl.Core.UI.ViewModels

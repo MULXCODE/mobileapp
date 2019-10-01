@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Reactive.Linq;
 using CoreGraphics;
 using Foundation;
+using Toggl.Core.Sync;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.Helper;
@@ -17,7 +18,6 @@ using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using UIKit;
-using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.iOS.ViewControllers
 {

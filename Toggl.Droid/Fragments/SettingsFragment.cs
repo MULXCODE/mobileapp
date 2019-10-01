@@ -3,6 +3,7 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Reactive.Linq;
+using Toggl.Core.Sync;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.Extensions;
@@ -14,7 +15,6 @@ using Toggl.Storage.Settings;
 using Xamarin.Essentials;
 using static Android.Support.V7.App.AppCompatDelegate;
 using static Toggl.Shared.Resources;
-using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.Droid.Fragments
 {

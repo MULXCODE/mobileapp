@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Reactive.Disposables;
 using Foundation;
+using Toggl.Core.Sync;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.ViewControllers.Settings.Models;
 using Toggl.iOS.ViewSources;
 using Toggl.Shared;
 using UIKit;
 using Colors = Toggl.Core.UI.Helper.Colors;
-using PresentableSyncStatus = Toggl.Core.Sync.PresentableSyncStatus;
 
 namespace Toggl.iOS.Cells.Settings
 {
